@@ -1,9 +1,9 @@
 # Proyecto_Pagina-Web_eCommerce
 
-Este repositorio contendra un proyecto realizado en la universidad, modalidad en pareja (Duo). Donde creamos una tienda web para un emprendimiento local de la ciudad de Corrientes Capital (Brightness.Store). Para ello utilizamos frameworks como Laravel y boootstrap, ademas de codigos HTML, CSS , PHP y JavaScript.
+Este repositorio contendra un proyecto realizado en la universidad, modalidad en pareja (Duo). Donde creamos una tienda web para un emprendimiento local de la ciudad de Corrientes Capital (Brightness.Store). Para ello utilizamos frameworks como Laravel y boootstrap, ademas de codigos HTML, CSS , PHP y SQL.
 Este proyecto consta de dos partes:
 - Proyecto-1: Realizamos la mayor parte del Frontend, siguiendo unas instrucciones dadas por los docentes de la catedra y cumpliendo unos requisitos minimos.
-- Proyecto-2: Trabajamos la parte del Backend de la tienda.
+- Proyecto-2: Trabajamos la parte del Backend de la tienda. Usando como base de datos mariaDB.
 
 ### Universidad
 Universidad Nacional del Nordeste (UNNE)

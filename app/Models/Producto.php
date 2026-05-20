@@ -4,21 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-    class Producto extends Model
+class Producto extends Model
+{
+    protected $fillable = [
+        'nombre',
+        'descripcion',
+        'precio',
+        'stock',
+        'url_imagen',
+        'activo',
+        'categoria_id',
+    ];
+
+    protected $casts = [
+        'precio' => 'decimal:2',
+        'stock' => 'integer',
+        'activo' => 'boolean',
+    ];
+
+    // Un producto pertenece a una sola categoria
+    public function categoria()
     {
-        prtected $fillable = [
-            'nombre',
-            'descripcion',
-            'precio',
-            'stock',
-            'url_imagen',
-            'activo',
-        ];
-
-        protected $caste = [
-            'precio'=>2 'decimal:2',
-            'stock'=> 'integer',
-            'activo'=> 'boolean',
-        ]
+        return $this->belongsTo(Categoria::class);
     }
-
+}
