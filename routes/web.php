@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConsultaController;
+use App\Http\Controllers\ProductoController;
 
 Route::get('/', function () {
     return view('principal');
@@ -26,6 +27,8 @@ Route::get('/terminos-y-uso', function () {
 Route::get('/catalogo', function () {
     return view('catalogo');
 });
+
+Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo');
 
 Route::get('/consultas', function () {
     return view('consultas');
