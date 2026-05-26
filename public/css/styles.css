@@ -10,19 +10,19 @@
 }
 
 .header-custom .navbar{
-    background-color: rgb(260, 250, 210);
+    background-color: rgb(250, 250, 210);
     border-radius: 15px;
 }
 
-.header-custom .nav-link, .header-custom .navbar-brand {
+.nav-link.active{
     color: rgb(68, 172, 255);
 }
 
-.header-custom .navbar-brand.active:hover, .header-custom .nav-link.active:hover {
+.nav-link:hover {
     color: rgb(137, 212, 255); 
 }
 
-.header-custom .navbar-brand.active, .header-custom .nav-link.active{
+.nav-link{
     color: rgb(6, 6, 6); 
 }
 

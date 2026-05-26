@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="/images/logo/favicon.jpeg">
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}?v={{ time() }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -45,11 +45,11 @@
             <div class="collapse navbar-collapse justify-content-center w-100" id="menuNavegacion">
               <div class="navbar-nav align-items-center text-center gap-3 gap-lg-4 pb-3 pb-lg-0">
                 
-                <a class="nav-link active" href="/catalogo">Catálogo</a>
-                <a class="nav-link active" href="/contactos">Contactos</a>
-                <a class="nav-link active" href="/comercializacion">Comercialización</a>
-                <a class="nav-link active" href="/quienes-somos">Quienes Somos</a>
-                <a class="nav-link active" href="/terminos-y-uso">Terminos y condiciones</a>
+                <a class="nav-link {{ request()->is('catalogo*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/catalogo">Catálogo</a>
+                <a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a>
+                <a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a>
+                <a class="nav-link {{ request()->is('quienes-somos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/quienes-somos">Quienes Somos</a>
+                <a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Terminos y condiciones</a>
                 
                 <div class="vr d-none d-lg-block" style="height: 25px; opacity: 0.2;"></div>
                 
