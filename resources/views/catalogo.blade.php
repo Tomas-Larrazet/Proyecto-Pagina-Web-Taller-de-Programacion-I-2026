@@ -7,7 +7,7 @@
 <div class="container mt-4">
   <div class="row">
       
-    <div class="col-md-2 mb-4">
+    <div class="col-lg-2 col-md-4 col-12 mb-4">
       <div class="sticky-top" style="top: 20px; z-index: 1020;">
         <div class="bg-light p-3 rounded shadow-sm">          
 
@@ -34,11 +34,11 @@
       </div>
     </div>
      
-    <div class="col-md-10">
+    <div class="col-lg-10 col-md-8 col-12">
       <div class="row ">
         
         @foreach($productos as $producto)
-        <div class="col-md-3 mb-4">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
           <div class="card h-100 shadow-sm">
             <img src="{{asset($producto->url_imagen)}}" class="card-img-top img-product" alt="Producto: {{ $producto->nombre }}">
             <div class="card-body d-flex flex-column">
