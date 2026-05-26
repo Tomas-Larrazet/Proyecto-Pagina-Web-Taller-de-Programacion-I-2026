@@ -28,7 +28,7 @@ Route::get('/catalogo', function () {
     return view('catalogo');
 });
 
-Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo');
+Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo.index');
 
 Route::get('/consultas', function () {
     return view('consultas');
