@@ -199,5 +199,10 @@ class ProductoSeeder extends Seeder
             ],
 
         ];
+
+        // Usamos un bucle para guardar cada producto en la BD
+        foreach ($productos as $producto) {
+            Producto::create($producto);
+        }
     }
 }
