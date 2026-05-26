@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConsultaController;
+use App\Http\Controllers\ProductoController;
 
 Route::get('/', function () {
     return view('principal');
@@ -27,6 +28,8 @@ Route::get('/catalogo', function () {
     return view('catalogo');
 });
 
+Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo.index');
+
 Route::get('/consultas', function () {
     return view('consultas');
 });
@@ -35,38 +38,6 @@ Route::post('/contactos', [ConsultaController::class, 'procesar']);
 
 Route::get('/exito', function () {
     return view('exito');
-});
-
-Route::get('/catalogo-abridores', function () {
-    return view('catalogo-abridores');
-});
-
-Route::get('/catalogo-escarapelas', function (){
-    return view('catalogo-escarapelas');
-});
-
-Route::get('/catalogo-argollas', function (){
-    return view('catalogo-argollas');
-});
-
-Route::get('/catalogo-aros', function (){
-    return view('catalogo-aros');
-});
-
-Route::get('/catalogo-anillos', function (){
-    return view('catalogo-anillos');
-});
-
-Route::get('/catalogo-pulseras', function (){
-    return view('catalogo-pulseras');
-});
-
-Route::get('/catalogo-conjuntos', function (){
-    return view('catalogo-conjuntos');
-});
-
-Route::get('/catalogo-broches', function (){
-    return view('catalogo-broches');
 });
 
 Route::get('/RegistroUsuario', function (){
