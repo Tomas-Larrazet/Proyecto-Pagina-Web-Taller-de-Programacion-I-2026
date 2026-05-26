@@ -198,6 +198,6 @@ class ProductoSeeder extends Seeder
                 'categoria_id' => 7,
             ],
 
-        ]
+        ];
     }
 }
