@@ -41,6 +41,7 @@ Route::get('/exito', function () {
     return view('exito');
 });
 
+/*
 Route::get('/RegistroUsuario', function (){
     return view('RegistroUsuario');
 });
@@ -54,14 +55,15 @@ Route::get('/logIn', function (){
 });
 
 Route::post('/ProcesarLogin', function () {
-    return redirect('/'); // Esto te manda directo a la página principal
+    return redirect('/');
 });
+*/
 
 // Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
 Route::middleware('guest')->group(function () {
     // Registro de usuario
-    Route::get('/RegistroUsuario', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/RegistroUsuario', [AuthController::class, 'register']);
+    Route::get('/registroUsuario', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/registroUsuario', [AuthController::class, 'register']);
 
     // Login
     Route::get('/logIn', [AuthController::class, 'showLogin'])->name('login');
@@ -69,4 +71,4 @@ Route::middleware('guest')->group(function () {
 });
 
 // Rutas para USUARIOS LOGUEADOS
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
