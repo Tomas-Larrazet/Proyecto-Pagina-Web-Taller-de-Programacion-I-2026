@@ -111,70 +111,22 @@
     <div class="container text-center">
         <h2 class="fw-bold mb-5">Nuestras categorias</h2>
         
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                   <a href="/catalogo-abridores" class="btn btn-dark px-4 py-2 rounded-pill">Abridores                       
+        <div class="row g-4 justify-content-center">
+            @foreach($categorias as $categoria)
+                <div class="col-md-3">
+                   <div class="p-4 header-custom rounded-3 shadow-sm h-100 d-flex align-items-center justify-content-center">                    
+                    <a href="{{ route('catalogo.index', ['categoria' => $categoria->id]) }}" class="btn btn-dark px-4 py-2 rounded-pill w-100">
+                        {{ $categoria->nombre }}                       
                     </a>  
+                    </div>
+                </div>
+            @endforeach
+            <div class="col-12 mt-5">
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ route('catalogo.index') }}" class="btn btn-dark px-4 py-2 rounded-pill">Ver Catálogo Completo</a>
+                    <a href="/comercializacion" class="btn btn-dark px-4 py-2 rounded-pill">+ Info de compras</a>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                
-                    <a href="/catalogo-argollas" class="btn btn-dark px-4 py-2 rounded-pill">Argollas                        
-                    </a>  
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">
-                    <a href="/catalogo-escarapelas" class="btn btn-dark px-4 py-2 rounded-pill">Escarapelas                        
-                    </a> 
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                    <a href="/catalogo-anillos" class="btn btn-dark px-4 py-2 rounded-pill">Anillos                        
-                    </a>  
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                    <a href="/catalogo-pulseras" class="btn btn-dark px-4 py-2 rounded-pill">Pulseras                        
-                    </a>  
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                    <a href="/catalogo-broches" class="btn btn-dark px-4 py-2 rounded-pill">Broches                       
-                    </a>  
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                    <a href="/catalogo-conjuntos" class="btn btn-dark px-4 py-2 rounded-pill">Conjuntos                       
-                    </a>  
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="p-4 header-custom rounded-3 shadow-sm h-100">                    
-                    <a href="/catalogo-aros" class="btn btn-dark px-4 py-2 rounded-pill">Aros                       
-                    </a>  
-                </div>
-            </div>
-
-                <div class="mt-4">
-                  <a href="/catalogo" class="btn btn-dark px-4 py-2 rounded-pill">Ver Catálogo Completo</a>
-              </div>
-              <div class="mt-4">
-                  <a href="/comercializacion" class="btn btn-dark px-4 py-2 rounded-pill">+ Info de compras</a>
-              </div>
-        </div>
     </div>
     </section>
 @endsection

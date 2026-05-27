@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InicioController;
 
-Route::get('/', function () {
-    return view('principal');
-});
+Route::get('/', [InicioController::class, 'index'])->name('principal');
+
 
 Route::get('/comercializacion', function () {
     return view('comercializacion');
@@ -55,3 +56,17 @@ Route::get('/logIn', function (){
 Route::post('/ProcesarLogin', function () {
     return redirect('/'); // Esto te manda directo a la página principal
 });
+
+// Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
+Route::middleware('guest')->group(function () {
+    // Registro de usuario
+    Route::get('/RegistroUsuario', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/RegistroUsuario', [AuthController::class, 'register']);
+
+    // Login
+    Route::get('/logIn', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/logIn', [AuthController::class, 'login']);
+});
+
+// Rutas para USUARIOS LOGUEADOS
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
