@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Log;
+
 class AuthController extends Controller
 {
     public function showRegister(){
@@ -19,15 +21,17 @@ class AuthController extends Controller
 
     // Procesa el formulario de registro
     public function register(Request $request){
+        
         // 1. VALIDACION DE DATOS
         $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'telefono' => 'nullable|string|max:20',
-            'direccion' => 'nullable|string|max:150',
+            'direccion' => 'nullable|string|max:255',
         ]);
 
+        
         // 2. CREAR USUARIO
         $user = User::create([
             'name' => $request->name,
@@ -36,7 +40,6 @@ class AuthController extends Controller
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
         ]);
-
         // 3. LOGUEAR AUTOMATICAMENTE Y REDIRIGIR
         Auth::login($user);
         return redirect('/')->with('success', 'Registro exitoso. ¡Bienvenido a Brightness Store!');

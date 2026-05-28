@@ -41,23 +41,6 @@ Route::get('/exito', function () {
     return view('exito');
 });
 
-/*
-Route::get('/RegistroUsuario', function (){
-    return view('RegistroUsuario');
-});
-
-Route::post('/RegistroUsuario', function () {
-    return view('exito1');
-});
-
-Route::get('/logIn', function (){
-    return view('logIn');
-});
-
-Route::post('/ProcesarLogin', function () {
-    return redirect('/');
-});
-*/
 
 // Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
 Route::middleware('guest')->group(function () {
