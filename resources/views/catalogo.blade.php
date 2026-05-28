@@ -81,9 +81,17 @@
 
               <div class="input-group shadow-sm">
                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" name="buscar" class="form-control border-start-0" 
+
+                <input type="text" name="buscar" class="form-control border-start-0 border-end-0 Border-color-black" 
                       placeholder="Buscar {{ request('categoria') && isset($categoriaSeleccionada) ? 'en ' . $categoriaSeleccionada->nombre : 'productos' }}..." 
                       value="{{ request('buscar') }}">
+
+                <select name="orden_precio" class="form-select btn fw-bold px-4 border-start-0 shadow" style="max-width: 180px; background-color: rgb(255, 243, 116);">
+                  <option value="Precio" style=" background-color: rgb(248, 233, 69);">Precio</option>
+                  <option value="menor " style=" background-color: rgb(248, 233, 69);" {{ request('orden_precio') == 'menor' ? 'selected' : '' }}>Menor a Mayor $</option>
+                  <option value="mayor" style=" background-color: rgb(248, 233, 69);" {{ request('orden_precio') == 'mayor' ? 'selected' : '' }}>Mayor a Menor $</option>
+                </select>
+
                 <button type="submit" class="btn btn-warning fw-bold px-4">Buscar</button>
               </div>
 
