@@ -96,16 +96,46 @@
       <div class="row ">
         
         @foreach($productos as $producto)
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-          <div class="card h-100 shadow-sm">
-            <img src="{{asset($producto->url_imagen)}}" class="card-img-top img-product" alt="Producto: {{ $producto->nombre }}">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ $producto->nombre }}</h5>
-              <p class="card-text">{{ $producto->descripcion }}</p>
-              <span class="badge bg-success fs-6 mt-auto">${{ number_format($producto->precio, 2, ',', '.') }}</span>
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+            <div class="card h-100 shadow border-0"> <div class="position-relative">
+                
+                <img src="{{ asset($producto->url_imagen) }}" 
+                    class="card-img-top img-product {{ $producto->stock <= 0 ? 'opacity-75' : '' }}" 
+                    alt="Producto: {{ $producto->nombre }}"
+                    style="object-fit: cover; height: 250px;"> @if($producto->stock <= 0)
+                  <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center rounded-top" 
+                      style="background-color: rgba(0, 0, 0, 0.4);"> <span class="badge bg-danger text-white fs-5 px-3 py-2 shadow text-uppercase" style="letter-spacing: 1px;">
+                      Sin Stock
+                    </span>
+                    
+                  </div>
+                @endif
+                
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-bold text-dark mb-1">{{ $producto->nombre }}</h5>
+                <p class="card-text text-muted small mb-3">{{ $producto->descripcion }}</p>
+                
+                <div class="mt-auto d-flex flex-column gap-2">
+                  <span class="badge bg-success fs-6 align-self-start mb-2">${{ number_format($producto->precio, 2, ',', '.') }}</span>
+                  
+                  @auth
+                  <button class="btn btn-dark w-100 fw-bold shadow-sm" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
+                    <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
+                  </button>
+                  @endauth
+
+                  @guest
+                  <button type="button" class="btn btn-dark w-100 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRegistroRequerido" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
+                    <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
+                  </button>
+                  @endguest 
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
         @endforeach
 
        @if($productos->isEmpty())
@@ -126,5 +156,37 @@
     </div>
   </div>
 </div>
+
+
+
+@guest
+<div class="modal fade" id="modalRegistroRequerido" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      
+      <div class="modal-header border-bottom-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      
+      <div class="modal-body text-center pb-5 px-4">
+        <i class="bi bi-person-lock text-warning mb-3 d-block" style="font-size: 4rem;"></i>
+        
+        <h4 class="fw-bold text-dark mb-3">¡Solo un paso más!</h4>
+        <p class="text-muted fs-6 mb-4">
+          Para empezar a comprar y sumar productos al carrito, primero debes iniciar sesión o crear una cuenta gratuita en <strong>Brightness.Store</strong>.
+        </p>
+        
+        <div class="d-flex justify-content-center gap-3">
+          <a href="{{ url('/logIn') }}" class="btn btn-outline-dark px-4 py-2 fw-bold w-50">Ingresar</a>
+          <a href="{{ url('/registroUsuario') }}" class="btn btn-warning px-4 py-2 fw-bold w-50">Registrarme</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+@endguest
+
+
 @endsection
 
