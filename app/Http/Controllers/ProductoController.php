@@ -9,22 +9,32 @@ use App\Models\Categoria;
 class ProductoController extends Controller
 {
     public function index(Request $request){
-        // 1. Buscamos todos los productos activos y traemos tambien su categoria (para evitar N+1)
+        // 1. Iniciamos la consulta base (¡Con Eager Loading y solo productos activos!)
         $query = Producto::with('categoria')->where('activo', true);
 
-        // 2. ¿El usuario filtró por categoría en el dropdown?
-        // El request de Laravel atrapa el '?categoria=ID' de la URL
+        // 2. FILTRO A: ¿El usuario filtró por categoría en el dropdown?
         if ($request->has('categoria') && $request->categoria != '') {
             $query->where('categoria_id', $request->categoria);
         }
 
-        // 3. Obtenemos los productos ya filtrados
+        // 3. FILTRO B: ¿El usuario escribió algo en el nuevo Buscador?
+        if ($request->has('buscar') && $request->buscar != '') {
+            $busqueda = $request->buscar;
+            
+            // Agrupamos el OR dentro de una función para no romper el filtro de 'activo' o 'categoria'
+            $query->where(function($q) use ($busqueda) {
+                $q->where('nombre', 'LIKE', '%' . $busqueda . '%')
+                  ->orWhere('descripcion', 'LIKE', '%' . $busqueda . '%');
+            });
+        }
+
+        // 4. Obtenemos los productos con todos los filtros aplicados
         $productos = $query->get();
 
-        // 4. Buscamos TODAS las categorías de la BD para que el Dropdown pueda dibujarse
+        // 5. Buscamos TODAS las categorías para el Dropdown lateral
         $categoriasDropdown = Categoria::all();
 
-        // 5. Mandamos ambos datos a la vista
+        // 6. Mandamos ambos datos a la vista 'catalogo'
         return view('catalogo', compact('productos', 'categoriasDropdown'));
     }
 }

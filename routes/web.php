@@ -21,10 +21,6 @@ Route::get('/terminos-y-uso', function () {
     return view('terminos-y-uso');
 });
 
-Route::get('/catalogo', function () {
-    return view('catalogo');
-});
-
 Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo.index');
 
 Route::get('/consultas', function () {
@@ -36,15 +32,6 @@ Route::get('/contactos', function () {
 });
 
 Route::post('/contactos', [ConsultaController::class, 'guardarConsulta']);
-
-/*
-Route::get('/exito', function () {
-    return view('exito');            <---|
-});                                    CONTROLAR SI HACEN FALTA                          
-Route::get('/exito1', function () {  <---|
-    return view('exito1');
-});
-*/
 
 // Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
 Route::middleware('guest')->group(function () {
