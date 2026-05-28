@@ -18,11 +18,6 @@
               Tu cuenta ha sido creada correctamente. Ya sos parte de la comunidad.
             </p>
 
-            <div class="d-grid gap-2 mt-5">
-              <a href="/logIn" class="btn btn-dark btn-lg">Ir a Iniciar Sesión</a>
-              <a href="/" class="btn btn-outline-secondary">Volver al Inicio</a>
-            </div>
-
           </div>
         </div>
       </div>

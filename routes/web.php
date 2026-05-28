@@ -17,10 +17,6 @@ Route::get('/quienes-somos', function () {
     return view('quienes-somos');
 });
 
-Route::get('/contactos', function () {
-    return view('contactos');
-});
-
 Route::get('/terminos-y-uso', function () {
     return view('terminos-y-uso');
 });
@@ -35,12 +31,20 @@ Route::get('/consultas', function () {
     return view('consultas');
 });
 
-Route::post('/contactos', [ConsultaController::class, 'procesar']);
-
-Route::get('/exito', function () {
-    return view('exito');
+Route::get('/contactos', function () {
+    return view('contactos');
 });
 
+Route::post('/contactos', [ConsultaController::class, 'guardarConsulta']);
+
+/*
+Route::get('/exito', function () {
+    return view('exito');            <---|
+});                                    CONTROLAR SI HACEN FALTA                          
+Route::get('/exito1', function () {  <---|
+    return view('exito1');
+});
+*/
 
 // Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
 Route::middleware('guest')->group(function () {

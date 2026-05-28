@@ -42,7 +42,7 @@ class AuthController extends Controller
         ]);
         // 3. LOGUEAR AUTOMATICAMENTE Y REDIRIGIR
         Auth::login($user);
-        return redirect('/')->with('success', 'Registro exitoso. ¡Bienvenido a Brightness Store!');
+        return redirect('/exito1')->with('success', 'Registro exitoso. ¡Bienvenido a Brightness Store!');
     }
 
     // Procesa el formulario de login
