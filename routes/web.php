@@ -5,6 +5,7 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\CarritoController;
 
 Route::get('/', [InicioController::class, 'index'])->name('principal');
 
@@ -46,3 +47,12 @@ Route::middleware('guest')->group(function () {
 
 // Rutas para USUARIOS LOGUEADOS
 Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+// Rutas para el carrito de compras (solo accesibles para usuarios autenticados)
+Route::middleware('auth')->group(function () {
+    Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
+    Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
+    Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
+});

@@ -86,10 +86,10 @@
                       placeholder="Buscar {{ request('categoria') && isset($categoriaSeleccionada) ? 'en ' . $categoriaSeleccionada->nombre : 'productos' }}..." 
                       value="{{ request('buscar') }}">
 
-                <select name="orden_precio" class="form-select btn fw-bold px-4 border-start-0 shadow" style="max-width: 180px; background-color: rgb(255, 243, 116);">
-                  <option value="Precio" style=" background-color: rgb(248, 233, 69);">Precio</option>
-                  <option value="menor " style=" background-color: rgb(248, 233, 69);" {{ request('orden_precio') == 'menor' ? 'selected' : '' }}>Menor a Mayor $</option>
-                  <option value="mayor" style=" background-color: rgb(248, 233, 69);" {{ request('orden_precio') == 'mayor' ? 'selected' : '' }}>Mayor a Menor $</option>
+                <select name="orden_precio" class="form-select btn fw-bold px-4 border-start-0 shadow" style="max-width: 180px; background-color: rgb(248, 233, 69);">
+                  <option value="Precio" style=" background-color: rgb(255, 243, 116);">Precio</option>
+                  <option value="menor " style=" background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'menor' ? 'selected' : '' }}>Menor a Mayor $  </option>
+                  <option value="mayor" style=" background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'mayor' ? 'selected' : '' }}>Mayor a Menor $  </option>
                 </select>
 
                 <button type="submit" class="btn btn-warning fw-bold px-4">Buscar</button>
@@ -129,9 +129,12 @@
                   <span class="badge bg-success fs-6 align-self-start mb-2">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                   
                   @auth
-                  <button class="btn btn-dark w-100 fw-bold shadow-sm" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
-                    <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
-                  </button>
+                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="w-100">
+                      @csrf
+                      <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
+                        <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
+                      </button>
+                    </form>
                   @endauth
 
                   @guest
@@ -194,6 +197,19 @@
   </div>
 </div>
 @endguest
+
+
+@auth
+    @if(session('carrito') && count(session('carrito')) > 0)
+        <a href="{{ route('carrito.ver') }}" class="btn btn-warning position-fixed shadow-lg d-flex align-items-center justify-content-center btn-flotante-carrito" title="Ver mi carrito">
+            <i class="bi bi-cart-fill fs-3 text-dark"></i>
+            
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light border-2" style="font-size: 0.85rem;">
+                {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
+            </span>
+        </a>
+    @endif
+@endauth
 
 
 @endsection

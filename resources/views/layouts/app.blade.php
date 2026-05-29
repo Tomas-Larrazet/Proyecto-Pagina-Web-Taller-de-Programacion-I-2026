@@ -56,6 +56,20 @@
                 <hr class="d-lg-none w-50 mx-auto my-1" style="opacity: 0.1;">
 
                 @auth
+                <li class="nav-item ms-3 d-flex align-items-center">
+                    <a href="{{ route('carrito.ver') }}" class="btn btn-outline-dark bg-dark position-relative d-flex align-items-center rounded-pill px-3 py-2 border-0 shadow-sm">
+                        <i class="bi bi-cart3 fs-5 text-warning"></i>
+                        <span class="ms-2 d-none d-md-inline fw-bold text-warning">Mi Carrito</span>
+
+                        @if(session('carrito') && count(session('carrito')) > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" style="font-size: 0.75rem;">
+                                {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
+                                <span class="visually-hidden">productos en carrito</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
+
                 <div class="nav-item dropdown ms-lg-3">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
