@@ -47,6 +47,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Rutas para USUARIOS LOGUEADOS
+
 Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/mis-compras', [PedidoController::class, 'index'])->middleware('auth')->name('mis-compras');

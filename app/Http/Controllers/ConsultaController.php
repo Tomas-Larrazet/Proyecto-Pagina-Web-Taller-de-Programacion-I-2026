@@ -48,8 +48,4 @@ class ConsultaController extends Controller
         ]); 
     }
 
-    public function procesar1(Request $request)
-    {
-        return view('exito1');
-    }
 }
