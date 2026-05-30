@@ -15,8 +15,7 @@
                         {{-- Mensaje personalizado con los datos recibidos del controlador --}}
                         <p class="lead">
                             Hola <strong>{{ $nombre }}</strong>, encantados de estar en contacto, un asesor comercial se contactara contigo 
-                            al mail <strong>{{ $email}}, saludos!
-                            </strong> 
+                            al mail <strong>{{ $email }}</strong>, saludos! 
                         </p>
 
                         <p class="mt-4">¡Muchas gracias!</p>

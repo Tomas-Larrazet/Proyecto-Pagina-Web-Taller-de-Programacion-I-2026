@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="/images/logo/favicon.jpeg">
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}?v={{ time() }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -45,19 +45,78 @@
             <div class="collapse navbar-collapse justify-content-center w-100" id="menuNavegacion">
               <div class="navbar-nav align-items-center text-center gap-3 gap-lg-4 pb-3 pb-lg-0">
                 
-                <a class="nav-link active" href="/catalogo">Catálogo</a>
-                <a class="nav-link active" href="/contactos">Contactos</a>
-                <a class="nav-link active" href="/comercializacion">Comercialización</a>
-                <a class="nav-link active" href="/quienes-somos">Quienes Somos</a>
-                <a class="nav-link active" href="/terminos-y-uso">Terminos y condiciones</a>
+                <a class="nav-link {{ request()->is('catalogo*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/catalogo">Catálogo</a>
+                <a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a>
+                <a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a>
+                <a class="nav-link {{ request()->is('quienes-somos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/quienes-somos">Quienes Somos</a>
+                <a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Terminos y condiciones</a>
                 
                 <div class="vr d-none d-lg-block" style="height: 25px; opacity: 0.2;"></div>
                 
                 <hr class="d-lg-none w-50 mx-auto my-1" style="opacity: 0.1;">
 
+                @auth
+                <li class="nav-item ms-3 d-flex align-items-center">
+                    <a href="{{ route('carrito.ver') }}" class="btn btn-outline-dark bg-dark position-relative d-flex align-items-center rounded-pill px-3 py-2 border-0 shadow-sm">
+                        <i class="bi bi-cart3 fs-5 text-warning"></i>
+                        <span class="ms-2 d-none d-md-inline fw-bold text-warning">Mi Carrito</span>
+
+                        @if(session('carrito') && count(session('carrito')) > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" style="font-size: 0.75rem;">
+                                {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
+                                <span class="visually-hidden">productos en carrito</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
+
+                <div class="nav-item dropdown ms-lg-3">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                            <i class="bi bi-person-fill fs-5"></i>
+                        </div>
+                        <span class="d-none d-lg-inline text-dark fw-semibold">
+                            {{ auth()->user()->name }}
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-warning mt-2" aria-labelledby="navbarDropdownUser">
+                        <li class="dropdown-header text-dark border-bottom pb-2 mb-2 d-lg-none">
+                            <strong>{{ auth()->user()->name }}</strong><br>
+                            <small class="text-muted">{{ auth()->user()->email }}</small>
+                        </li>
+                        
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="/mis-compras">
+                                <i class="bi bi-bag-check text-muted"></i> Mis Compras
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="/perfil">
+                                <i class="bi bi-gear text-muted"></i> Editar Perfil
+                            </a>
+                        </li>
+                        
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        <li>
+                            <form action="{{ url('/logOut') }}" method="POST" class="px-2">
+                                @csrf
+                                <button type="submit" class="dropdown-item btn-link text-danger d-flex align-items-center gap-2 rounded" style="border: none; background: none; width: 100%;">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                @endauth
+
+                @guest
                 <a href="/logIn" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow-sm d-inline-flex align-items-center mt-2 mt-lg-0">
-                  <i class="bi bi-person-circle me-2 fs-5"></i> Ingresar
+                  <i class="bi bi-person-circle me-2 fs-5"></i> Iniciar Sesión
                 </a>
+                @endguest
 
               </div>
             </div>

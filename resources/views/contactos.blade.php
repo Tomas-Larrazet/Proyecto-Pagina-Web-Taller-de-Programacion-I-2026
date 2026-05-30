@@ -98,28 +98,44 @@
 
             <div class="card border-warning shadow"> 
                 <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Formulario de contacto</h2> 
+                    
+                    @guest
+                    <h2 class="text-center mb-4">Ingrese sus datos para enviarnos su consulta</h2>
+                    @endguest
             
                     <form action="{{ url('/contactos') }}" method="POST">
                     @csrf
 
+                    @guest
                     <div class="mb-3"> 
-                        <label class="form-label">Nombre</label>
-                        <input type="text" name="nombre" class="form-control" placeholder="Ingrese su nombre" required> 
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-control @error('name') is-invalid @enderror" placeholder="Ingrese su nombre" value="{{ old('name') }}" required> 
+                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div> 
                     
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Ingrese su email" required> 
+                        <label class="form-label">Correo Electronico</label>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Ingrese su email" value="{{ old('email') }}" required>
+                        @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror 
                     </div>
-                    
+                    @endguest
+
+                    @auth
+                        <div class="alert alert-secondary py-2 border-0 shadow-sm mb-3">
+                            <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                            Enviando consulta como: <strong>{{ auth()->user()->name }}</strong> 
+                            <span class="text-muted">({{ auth()->user()->email }})</span>
+                        </div>
+                    @endauth
+
                     <div class="mb-3">
-                        <label class="form-label">Mensaje</label>
-                        <textarea name="mensaje" class="form-control" rows="4" placeholder="Ingrese su mensaje" required></textarea>
+                        <label class="form-label">Mensaje o consulta</label>
+                        <textarea name="mensaje" class="form-control @error('mensaje') is-invalid @enderror" rows="4" placeholder="Ingrese su mensaje" required>{{ old('mensaje') }}</textarea>
+                        @error('mensaje') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                         
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-dark btn-lg">Enviar mensaje</button>
+                        <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">Enviar mensaje o consulta</button>
                     </div>
                     </form>
                 </div>

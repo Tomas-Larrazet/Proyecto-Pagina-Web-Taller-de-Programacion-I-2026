@@ -15,7 +15,7 @@
               <p class="text-muted small">Ingresá a tu cuenta de Brightness.Store</p>
             </div>
             
-            <form action="{{ url('/ProcesarLogin') }}" method="POST">
+            <form action="{{ url('/logIn') }}" method="POST">
              @csrf
              
              <div class="mb-4">
@@ -34,7 +34,7 @@
 
              <div class="text-center mt-4">
                  <p class="small mb-1"><a class="text-decoration-none text-muted">¿Olvidaste tu contraseña?</a></p>
-                 <p class="small">¿No tenés cuenta? <a href="/RegistroUsuario" class="text-decoration-none fw-bold text-dark">Registrate acá</a></p>
+                 <p class="small">¿No tenés cuenta? <a href="/registroUsuario" class="text-decoration-none fw-bold text-dark">Registrate acá</a></p>
              </div>
 
             </form>

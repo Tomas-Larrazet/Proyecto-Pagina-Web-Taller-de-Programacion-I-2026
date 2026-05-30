@@ -3,10 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InicioController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\PedidoController;
 
-Route::get('/', function () {
-    return view('principal');
-});
+Route::get('/', [InicioController::class, 'index'])->name('principal');
+
 
 Route::get('/comercializacion', function () {
     return view('comercializacion');
@@ -16,16 +19,8 @@ Route::get('/quienes-somos', function () {
     return view('quienes-somos');
 });
 
-Route::get('/contactos', function () {
-    return view('contactos');
-});
-
 Route::get('/terminos-y-uso', function () {
     return view('terminos-y-uso');
-});
-
-Route::get('/catalogo', function () {
-    return view('catalogo');
 });
 
 Route::get('/catalogo', [ProductoController::class, 'index'])->name('catalogo.index');
@@ -34,24 +29,34 @@ Route::get('/consultas', function () {
     return view('consultas');
 });
 
-Route::post('/contactos', [ConsultaController::class, 'procesar']);
-
-Route::get('/exito', function () {
-    return view('exito');
+Route::get('/contactos', function () {
+    return view('contactos');
 });
 
-Route::get('/RegistroUsuario', function (){
-    return view('RegistroUsuario');
+Route::post('/contactos', [ConsultaController::class, 'guardarConsulta']);
+
+// Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
+Route::middleware('guest')->group(function () {
+    // Registro de usuario
+    Route::get('/registroUsuario', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/registroUsuario', [AuthController::class, 'register']);
+
+    // Login
+    Route::get('/logIn', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/logIn', [AuthController::class, 'login']);
 });
 
-Route::post('/RegistroUsuario', function () {
-    return view('exito1');
-});
+// Rutas para USUARIOS LOGUEADOS
 
-Route::get('/logIn', function (){
-    return view('logIn');
-});
+Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::post('/ProcesarLogin', function () {
-    return redirect('/'); // Esto te manda directo a la página principal
+Route::get('/mis-compras', [PedidoController::class, 'index'])->middleware('auth')->name('mis-compras');
+
+// Rutas para el carrito de compras (solo accesibles para usuarios autenticados)
+Route::middleware('auth')->group(function () {
+    Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
+    Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
+    Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
 });
