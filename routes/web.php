@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [InicioController::class, 'index'])->name('principal');
 
@@ -59,4 +60,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
     Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
+});
+
+Route::get('/admin/panel', [AdminController::class, 'index'])->middleware('auth')->name('admin.panel');
+
+// Rutas exclusivas para el ADMINISTRADOR
+Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(function () {
+    
+    // Panel principal
+    Route::get('/admin/panel', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.panel');
+
 });

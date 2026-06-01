@@ -20,32 +20,6 @@ class AuthController extends Controller
     }
 
     // Procesa el formulario de registro
-    public function register(Request $request){
-        
-        // 1. VALIDACION DE DATOS
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'telefono' => 'nullable|string|max:20',
-            'direccion' => 'nullable|string|max:255',
-        ]);
-
-        
-        // 2. CREAR USUARIO
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), //Encriptacion de la contraseña
-            'rol' => 'cliente',
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-        ]);
-        // 3. LOGUEAR AUTOMATICAMENTE Y REDIRIGIR
-        Auth::login($user);
-        return view('/exito1')->with('success', 'Registro exitoso. ¡Bienvenido a Brightness Store!');
-    }
-
     // Procesa el formulario de login
     public function login(Request $request){
         // 1. VALIDACION DE DATOS
@@ -54,13 +28,21 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // 2. Intentar iniciar sesión (Auth::attempt busca en la BD y compara contraseñas)
+        // 2. Intentar iniciar sesión
         if (Auth::attempt($credentials, $request->has('remember'))){
             $request->session()->regenerate(); // Previene ataques de sesión
+
+            // 3. MAGIA DE ROLES: Verificamos quién acaba de entrar
+            if (Auth::user()->rol === 'admin') {
+                // Si es el Administrador, lo mandamos a su panel exclusivo
+                return redirect()->intended('/admin/panel'); 
+            }
+
+            // Si es un cliente normal, lo mandamos al catálogo
             return redirect()->intended(route('catalogo.index'));
         }
 
-        // 3. Si falla, vuelve atras con el error
+        // 4. Si falla, vuelve atras con el error
         return back()->withErrors([
             'email' => 'Las credenciales no coinciden con nuestros registros.',
         ])->onlyInput('email');
