@@ -70,4 +70,29 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(f
     // Panel principal
     Route::get('/admin/panel', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.panel');
 
+    // Rutas para el CRUD de Productos
+
+    // Listado de productos
+    Route::get('/admin/productos', [App\Http\Controllers\AdminController::class, 'productos'])->name('admin.productos.index');
+
+    // Borrar producto (Baja lógica)
+    Route::delete('/admin/productos/{id}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.productos.destroy');
+
+    //Crear productos
+    Route::get('/admin/productos/crear', [App\Http\Controllers\AdminController::class, 'create'])->name('admin.productos.create');
+    Route::post('/admin/productos', [App\Http\Controllers\AdminController::class, 'store'])->name('admin.productos.store');
+
+    // Editar producto
+    Route::get('/admin/productos/{id}/editar', [App\Http\Controllers\AdminController::class, 'edit'])->name('admin.productos.edit');
+    Route::put('/admin/productos/{id}', [App\Http\Controllers\AdminController::class, 'update'])->name('admin.productos.update');
+
+    // Historial de Ventas
+    Route::get('/admin/ventas', [App\Http\Controllers\AdminController::class, 'ventas'])->name('admin.ventas.index');
+
+    // Ver detalle de una venta
+    Route::get('/admin/ventas/{id}', [App\Http\Controllers\AdminController::class, 'showVenta'])->name('admin.ventas.show');
+
+    // Bandeja de Consultas/Contacto
+    Route::get('/admin/consultas', [App\Http\Controllers\AdminController::class, 'consultas'])->name('admin.consultas.index');
+
 });

@@ -32,7 +32,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title text-primary">Gestión de Productos</h5>
                         <p class="card-text">Alta, baja y modificación de joyas.</p>
-                        <a href="#" class="btn btn-primary">Ir a Productos</a>
+                        <a href="{{ route('admin.productos.index') }}" class="btn btn-primary">Ir a Productos</a>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title text-success">Ventas Realizadas</h5>
                         <p class="card-text">Revisá el historial de compras.</p>
-                        <a href="#" class="btn btn-success">Ver Ventas</a>
+                        <a href="{{ route('admin.ventas.index') }}" class="btn btn-success">Ver Ventas</a>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title text-warning">Usuarios y Consultas</h5>
                         <p class="card-text">Administrá clientes y mensajes.</p>
-                        <a href="#" class="btn btn-warning">Ver Usuarios</a>
+                        <a href="{{ route('admin.consultas.index') }}" class="btn btn-warning">Ver Consultas</a>
                     </div>
                 </div>
             </div>

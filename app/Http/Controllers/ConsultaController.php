@@ -34,6 +34,7 @@ class ConsultaController extends Controller
         
         // Guardar en la base de datos
         Consulta::create([
+            'id' => Auth::id(),
             'nombre' => $nombreFinal,
             'email' => $emailFinal,
             'mensaje' => $request->mensaje,
