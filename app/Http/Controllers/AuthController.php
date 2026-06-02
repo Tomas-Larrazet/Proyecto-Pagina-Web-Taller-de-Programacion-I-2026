@@ -20,6 +20,31 @@ class AuthController extends Controller
     }
 
     // Procesa el formulario de registro
+    public function register(Request $request)
+    {
+        // 1. VALIDACIÓN
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed', // 'confirmed' exige el campo password_confirmation
+            'telefono' => 'nullable|string|max:20',
+            'direccion' => 'nullable|string|max:255',
+        ]);
+
+        // 2. CREACIÓN DEL USUARIO
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // Encriptación obligatoria
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+        ]);
+
+        // 3. LOGUEAR AUTOMÁTICAMENTE Y REDIRIGIR
+        Auth::login($user);
+        return redirect()->route('catalogo.index')->with('success', '¡Te registraste correctamente!');
+    }
+
     // Procesa el formulario de login
     public function login(Request $request){
         // 1. VALIDACION DE DATOS
