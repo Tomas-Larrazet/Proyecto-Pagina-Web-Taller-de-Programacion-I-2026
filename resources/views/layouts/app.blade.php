@@ -76,7 +76,7 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end shadow border-warning mt-2">
                                             <li><a class="dropdown-item" href="/mis-compras"><i class="bi bi-bag-check text-muted"></i> Mis Compras</a></li>
-                                            <li><a class="dropdown-item" href="/perfil"><i class="bi bi-gear text-muted"></i> Editar Perfil</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('perfil.edit') }}"><i class="bi bi-gear text-muted"></i> Editar Perfil</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
                                                 <form action="{{ url('/logOut') }}" method="POST">
