@@ -8,6 +8,7 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PerfilController;
 
 Route::get('/', [InicioController::class, 'index'])->name('principal');
 
@@ -52,6 +53,13 @@ Route::middleware('guest')->group(function () {
 Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/mis-compras', [PedidoController::class, 'index'])->middleware('auth')->name('mis-compras');
+
+Route::middleware('auth')->group(function () {
+    
+    // Rutas para editar perfil
+    Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
+});
 
 // Rutas para el carrito de compras (solo accesibles para usuarios autenticados)
 Route::middleware('auth')->group(function () {
