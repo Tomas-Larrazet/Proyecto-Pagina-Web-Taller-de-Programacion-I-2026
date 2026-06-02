@@ -47,7 +47,6 @@
                         </thead>
                         <tbody>
                             @php
-                                // Detectamos dinámicamente cómo se llama la relación que hizo tu compañero
                                 $items = $pedido->detalles ?? $pedido->productos ?? [];
                             @endphp
 

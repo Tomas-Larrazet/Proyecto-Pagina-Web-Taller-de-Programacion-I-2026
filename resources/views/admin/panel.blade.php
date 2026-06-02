@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <<div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body text-center">
                         <h5 class="card-title text-warning">Usuarios y Consultas</h5>

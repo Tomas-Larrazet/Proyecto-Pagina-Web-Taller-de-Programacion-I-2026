@@ -136,7 +136,7 @@
 
                         <!-- Redes sociales -->
                         <div class="d-flex justify-content-center gap-3 mt-3">
-                            <a href="https://github.com/tlarrazet-create" target="_blank" rel="noopener noreferrer" class="social-icon">
+                            <a href="https://github.com/Tomas-Larrazet" target="_blank" rel="noopener noreferrer" class="social-icon">
                                 <i class="bi bi-github"></i>
                             </a>
                             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon">

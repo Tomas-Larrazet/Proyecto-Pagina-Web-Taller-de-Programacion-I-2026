@@ -37,7 +37,7 @@ class AdminController extends Controller
     // Guarda el producto en la base de datos
     public function store(Request $request)
     {
-        // 1. Validamos que no falte nada importante
+        
         $request->validate([
             'nombre' => 'required|string|max:150',
             'descripcion' => 'nullable|string',
@@ -47,10 +47,9 @@ class AdminController extends Controller
             'imagen' => 'nullable|image|max:2048'
         ]);
 
-        //Procesar la imagen
         $rutaImagen = null;
         if ($request->hasFile('imagen')) {
-            // Guarda la foto en la carpeta storage/app/public/productos
+            
             $rutaImagen = $request->file('imagen')->store('productos', 'public');
         }
 
@@ -62,10 +61,9 @@ class AdminController extends Controller
             'stock' => $request->stock,
             'categoria_id' => $request->categoria_id,
             'url_imagen' => $rutaImagen,
-            'activo' => 1 // Por defecto nace activo
+            'activo' => 1 
         ]);
 
-        // 3. Volvemos al panel con un mensaje de éxito
         return redirect()->route('admin.panel')->with('success', '¡Producto cargado con éxito!');
     }
    
@@ -74,8 +72,6 @@ class AdminController extends Controller
     {
         $producto = Producto::findOrFail($id);
         
-        // Como el modelo tiene SoftDeletes, esto NO borra el registro de MariaDB. 
-        // Solo le pone la fecha actual en la columna 'deleted_at'.
         $producto->delete(); 
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado del catálogo (Baja lógica).');
@@ -112,7 +108,7 @@ class AdminController extends Controller
         $producto->stock = $request->stock;
         $producto->categoria_id = $request->categoria_id;
 
-        // 3. Si el usuario subió una foto nueva, la guardamos y reemplazamos la ruta
+        // 3. Reemplazar foto nueva del usuario
         if ($request->hasFile('imagen')) {
             $producto->url_imagen = $request->file('imagen')->store('productos', 'public');
         }
@@ -151,7 +147,7 @@ class AdminController extends Controller
     // Muestra la lista de clientes registrados
     public function usuarios()
     {
-        // Traemos a todos los usuarios, ordenados por los más nuevos primero
+        // Traemos a todos los usuarios
         $usuarios = User::orderBy('created_at', 'desc')->get();
         return view('admin.usuarios.index', compact('usuarios'));
     }
@@ -165,21 +161,18 @@ class AdminController extends Controller
     // Guarda al nuevo administrador en la base de datos
     public function storeAdmin(Request $request)
     {
-        // 1. Validamos los datos (el email debe ser único en la tabla users)
+        // 1. Validamos los datos 
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // 'confirmed' obliga a que los dos campos de clave coincidan
+            'password' => 'required|string|min:8|confirmed', 
         ]);
 
         // 2. Creamos el usuario
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Encriptamos la clave
-            
-            // ATENCIÓN ACÁ: Cambiá 'rol' y 'admin' por los nombres exactos 
-            // que acabás de descubrir que usa tu base de datos.
+            'password' => Hash::make($request->password), 
             'rol' => 'admin', 
         ]);
 

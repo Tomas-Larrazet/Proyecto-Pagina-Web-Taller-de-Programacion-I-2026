@@ -49,7 +49,7 @@
                                 <li class="nav-item"><a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a></li>
                                 <li class="nav-item"><a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a></li>
                                 <li class="nav-item"><a class="nav-link {{ request()->is('quienes-somos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/quienes-somos">Quienes Somos</a></li>
-                                <li class="nav-item"><a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Términos</a></li>
+                                <li class="nav-item"><a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Términos y Uso</a></li>
                                 
                                 <li class="nav-item d-none d-lg-block"><div class="vr" style="height: 25px; opacity: 0.2;"></div></li>
                                 <hr class="d-lg-none w-50 mx-auto my-1" style="opacity: 0.1;">
