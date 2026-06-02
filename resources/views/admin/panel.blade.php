@@ -10,7 +10,7 @@
 
     <nav class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">💎 Brightness.Store | Panel Admin</a>
+            <a class="navbar-brand" href="{{ url('/') }}" target="_blank">💎 Brightness.Store | Ver Tienda Pública</a>
             <div class="d-flex">
                 <span class="navbar-text me-3">
                     Hola, {{ Auth::user()->name }}
@@ -47,12 +47,15 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mb-3">
+            <<div class="col-md-4 mb-3">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body text-center">
                         <h5 class="card-title text-warning">Usuarios y Consultas</h5>
                         <p class="card-text">Administrá clientes y mensajes.</p>
-                        <a href="{{ route('admin.consultas.index') }}" class="btn btn-warning">Ver Consultas</a>
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('admin.usuarios.index') }}" class="btn btn-outline-warning text-dark fw-bold">Ver Usuarios Registrados</a>
+                            <a href="{{ route('admin.consultas.index') }}" class="btn btn-warning">Bandeja de Mensajes</a>
+                        </div>
                     </div>
                 </div>
             </div>

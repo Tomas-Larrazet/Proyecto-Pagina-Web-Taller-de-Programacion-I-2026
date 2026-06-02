@@ -10,124 +10,101 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <header class="header-custom">
-    <div class="bg-primary text-white py-1">
-        <div id="miniCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active text-center">
-                    <small><i class="bi bi-truck me-2"></i> Envíos gratis en compras superiores a $45.000</small>
-                </div>
-                <div class="carousel-item text-center">
-                    <small><i class="bi bi-credit-card me-2"></i> 3 Cuotas sin interés con todas las tarjetas</small>
-                </div>
-                <div class="carousel-item text-center">
-                    <small><i class="bi bi-gem me-2"></i> 15% OFF abonando por transferencia</small>
-                </div>
-            </div>
-        </div>
-    </div>
+    <header class="fixed-top shadow-sm" style="z-index: 1030; background-color: rgb(249, 246, 196)">
 
-    <div class="container-fluid d-flex flex-column align-items-center py-3">
-        <a href="/">
-            <img src="{{ asset('images/logo/logo.jpeg') }}" 
-                 alt="Logo de Brightness.Store" 
-                 class="img-fluid mb-2"
-                 style="max-height: 140px;">
-        </a>
-
-        <nav class="navbar navbar-expand-lg navbar-light w-100">
-          <div class="container flex-column justify-content-center">
-            
-            <button class="navbar-toggler mb-2 border-0 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion" aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir menú">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center w-100" id="menuNavegacion">
-              <div class="navbar-nav align-items-center text-center gap-3 gap-lg-4 pb-3 pb-lg-0">
-                
-                <a class="nav-link {{ request()->is('catalogo*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/catalogo">Catálogo</a>
-                <a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a>
-                <a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a>
-                <a class="nav-link {{ request()->is('quienes-somos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/quienes-somos">Quienes Somos</a>
-                <a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Terminos y condiciones</a>
-                
-                <div class="vr d-none d-lg-block" style="height: 25px; opacity: 0.2;"></div>
-                
-                <hr class="d-lg-none w-50 mx-auto my-1" style="opacity: 0.1;">
-
-                @auth
-                <li class="nav-item ms-3 d-flex align-items-center">
-                    <a href="{{ route('carrito.ver') }}" class="btn btn-outline-dark bg-dark position-relative d-flex align-items-center rounded-pill px-3 py-2 border-0 shadow-sm">
-                        <i class="bi bi-cart3 fs-5 text-warning"></i>
-                        <span class="ms-2 d-none d-md-inline fw-bold text-warning">Mi Carrito</span>
-
-                        @if(session('carrito') && count(session('carrito')) > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" style="font-size: 0.75rem;">
-                                {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
-                                <span class="visually-hidden">productos en carrito</span>
-                            </span>
-                        @endif
-                    </a>
-                </li>
-
-                <div class="nav-item dropdown ms-lg-3">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
-                            <i class="bi bi-person-fill fs-5"></i>
+            <div class="bg-primary text-white py-1">
+                <div id="miniCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active text-center">
+                            <small><i class="bi bi-truck me-2"></i> Envíos gratis en compras superiores a $45.000</small>
                         </div>
-                        <span class="d-none d-lg-inline text-dark fw-semibold">
-                            {{ auth()->user()->name }}
-                        </span>
-                    </a>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-warning mt-2" aria-labelledby="navbarDropdownUser">
-                        <li class="dropdown-header text-dark border-bottom pb-2 mb-2 d-lg-none">
-                            <strong>{{ auth()->user()->name }}</strong><br>
-                            <small class="text-muted">{{ auth()->user()->email }}</small>
-                        </li>
-                        
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2" href="/mis-compras">
-                                <i class="bi bi-bag-check text-muted"></i> Mis Compras
-                            </a>
-                        </li>
-                        
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2" href="/perfil">
-                                <i class="bi bi-gear text-muted"></i> Editar Perfil
-                            </a>
-                        </li>
-                        
-                        <li><hr class="dropdown-divider"></li>
-                        
-                        <li>
-                            <form action="{{ url('/logOut') }}" method="POST" class="px-2">
-                                @csrf
-                                <button type="submit" class="dropdown-item btn-link text-danger d-flex align-items-center gap-2 rounded" style="border: none; background: none; width: 100%;">
-                                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                        <div class="carousel-item text-center">
+                            <small><i class="bi bi-credit-card me-2"></i> 3 Cuotas sin interés con todas las tarjetas</small>
+                        </div>
+                        <div class="carousel-item text-center">
+                            <small><i class="bi bi-gem me-2"></i> 15% OFF abonando por transferencia</small>
+                        </div>
+                    </div>
                 </div>
-                @endauth
-
-                @guest
-                <a href="/logIn" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow-sm d-inline-flex align-items-center mt-2 mt-lg-0">
-                  <i class="bi bi-person-circle me-2 fs-5"></i> Iniciar Sesión
-                </a>
-                @endguest
-
-              </div>
             </div>
-            
-          </div>
-        </nav>  
-    </div>
-    </header>
 
-    <main class="flex-grow-1">
-        @yield('contenido') 
+            <div class="container-fluid py-2">
+                <div class="text-center mb-2">
+                    <a href="/">
+                        <img src="{{ asset('images/logo/logo.jpeg') }}" alt="Logo de Brightness.Store" class="img-fluid" style="max-height: 100px;">
+                    </a>
+                </div>
+
+                <nav class="navbar navbar-expand-lg navbar-light w-100">
+                    <div class="container justify-content-center">
+                        
+                        <button class="navbar-toggler mb-2 border-0 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion" aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir menú">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse justify-content-center w-100" id="menuNavegacion">
+                            <ul class="navbar-nav align-items-center text-center gap-3 gap-lg-4 m-0">
+                                
+                                <li class="nav-item"><a class="nav-link {{ request()->is('catalogo*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/catalogo">Catálogo</a></li>
+                                <li class="nav-item"><a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a></li>
+                                <li class="nav-item"><a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a></li>
+                                <li class="nav-item"><a class="nav-link {{ request()->is('quienes-somos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/quienes-somos">Quienes Somos</a></li>
+                                <li class="nav-item"><a class="nav-link {{ request()->is('terminos-y-uso') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/terminos-y-uso">Términos</a></li>
+                                
+                                <li class="nav-item d-none d-lg-block"><div class="vr" style="height: 25px; opacity: 0.2;"></div></li>
+                                <hr class="d-lg-none w-50 mx-auto my-1" style="opacity: 0.1;">
+
+                                @auth
+                                    <li class="nav-item">
+                                        <a href="{{ route('carrito.ver') }}" class="btn btn-outline-dark bg-dark position-relative d-flex align-items-center rounded-pill px-3 py-2 border-0 shadow-sm">
+                                            <i class="bi bi-cart3 fs-5 text-warning"></i>
+                                            <span class="ms-2 d-none d-md-inline fw-bold text-warning">Mi Carrito</span>
+                                            @if(session('carrito') && count(session('carrito')) > 0)
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+                                                    {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
+                                                </span>
+                                            @endif
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <div class="rounded-circle bg-dark text-warning d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person-fill fs-5"></i>
+                                            </div>
+                                            <span class="d-none d-lg-inline text-dark fw-semibold">{{ auth()->user()->name }}</span>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow border-warning mt-2">
+                                            <li><a class="dropdown-item" href="/mis-compras"><i class="bi bi-bag-check text-muted"></i> Mis Compras</a></li>
+                                            <li><a class="dropdown-item" href="/perfil"><i class="bi bi-gear text-muted"></i> Editar Perfil</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form action="{{ url('/logOut') }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endauth
+
+                                @guest
+                                    <li class="nav-item">
+                                        <a href="/logIn" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow-sm">
+                                            <i class="bi bi-person-circle me-2"></i> Iniciar Sesión
+                                        </a>
+                                    </li>
+                                @endguest
+
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+    <main style="padding-top: 220px;" class="flex-grow-1">
+    @yield('contenido')
     </main>
 
     <footer class="footer-custom text-black mt-5 pt-4 pb-2">

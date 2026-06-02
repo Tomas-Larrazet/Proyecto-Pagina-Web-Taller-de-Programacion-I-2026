@@ -7,6 +7,8 @@ use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Pedido;
 use App\Models\Consulta;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -144,5 +146,43 @@ class AdminController extends Controller
     {
         $consultas = Consulta::orderBy('created_at', 'desc')->get();
         return view('admin.consultas.index', compact('consultas'));
+    }
+
+    // Muestra la lista de clientes registrados
+    public function usuarios()
+    {
+        // Traemos a todos los usuarios, ordenados por los más nuevos primero
+        $usuarios = User::orderBy('created_at', 'desc')->get();
+        return view('admin.usuarios.index', compact('usuarios'));
+    }
+
+    // Muestra el formulario para crear un admin
+    public function createAdmin()
+    {
+        return view('admin.usuarios.crear_admin');
+    }
+
+    // Guarda al nuevo administrador en la base de datos
+    public function storeAdmin(Request $request)
+    {
+        // 1. Validamos los datos (el email debe ser único en la tabla users)
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed', // 'confirmed' obliga a que los dos campos de clave coincidan
+        ]);
+
+        // 2. Creamos el usuario
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // Encriptamos la clave
+            
+            // ATENCIÓN ACÁ: Cambiá 'rol' y 'admin' por los nombres exactos 
+            // que acabás de descubrir que usa tu base de datos.
+            'rol' => 'admin', 
+        ]);
+
+        return redirect()->route('admin.usuarios.index')->with('success', '¡Nuevo Administrador creado con éxito!');
     }
 }

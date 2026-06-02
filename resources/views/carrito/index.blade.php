@@ -117,12 +117,17 @@
                         </span>
                     </div>
 
-                    <form action="{{ route('carrito.comprar') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-warning w-100 fw-bold py-3 shadow-sm rounded-3 btn-confirmar-compra text-uppercase" style="letter-spacing: 0.5px;">
-                            <i class="bi bi-bag-check-fill me-1 fs-5 align-middle"></i> Confirmar Compra
+                    @if(auth()->user()->rol == 'admin') <button type="button" class="btn btn-secondary w-100 fw-bold py-3 shadow-sm rounded-3 text-uppercase" style="letter-spacing: 0.5px;" disabled>
+                            <i class="bi bi-ban me-1 fs-5 align-middle"></i> Los administradores no pueden comprar
                         </button>
-                    </form>
+                    @else
+                        <form action="{{ route('carrito.comprar') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-warning w-100 fw-bold py-3 shadow-sm rounded-3 btn-confirmar-compra text-uppercase" style="letter-spacing: 0.5px;">
+                                <i class="bi bi-bag-check-fill me-1 fs-5 align-middle"></i> Confirmar Compra
+                            </button>
+                        </form>
+                    @endif
 
                     <div class="text-center mt-3">
                         <span class="text-muted small"><i class="bi bi-shield-lock-fill text-muted me-1"></i> Pago 100% Seguro</span>

@@ -95,4 +95,11 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(f
     // Bandeja de Consultas/Contacto
     Route::get('/admin/consultas', [App\Http\Controllers\AdminController::class, 'consultas'])->name('admin.consultas.index');
 
+    // Listado de Usuarios Registrados
+    Route::get('/admin/usuarios', [App\Http\Controllers\AdminController::class, 'usuarios'])->name('admin.usuarios.index');
+
+    // Crear nuevos Administradores
+    Route::get('/admin/usuarios/crear-admin', [App\Http\Controllers\AdminController::class, 'createAdmin'])->name('admin.usuarios.create_admin');
+    Route::post('/admin/usuarios/crear-admin', [App\Http\Controllers\AdminController::class, 'storeAdmin'])->name('admin.usuarios.store_admin');
+
 });

@@ -8,7 +8,7 @@
   <div class="row">
       
     <div class="col-lg-2 col-md-4 col-12 mb-4">
-      <div class="sticky-top" style="top: 20px; z-index: 1020;">
+      <div class="sticky-top" style="top: 250px; z-index: 1020;">
         <div class="bg-light p-3 rounded shadow-sm">          
 
           <h5 class="mb-3 fw-bold">Categorías</h5>
@@ -129,12 +129,17 @@
                   <span class="badge bg-success fs-6 align-self-start mb-2">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                   
                   @auth
-                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="w-100">
-                      @csrf
-                      <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
-                        <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
+                    @if(auth()->user()->rol == 'admin') <button type="button" class="btn btn-secondary w-100 fw-bold shadow-sm" disabled>
+                        <i class="bi bi-ban me-1"></i> Modo Admin
                       </button>
-                    </form>
+                    @else
+                      <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="w-100">
+                        @csrf
+                        <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm" {{ $producto->stock <= 0 ? 'disabled' : '' }}>
+                          <i class="bi bi-cart-plus me-1"></i> Agregar al Carrito
+                        </button>
+                      </form>
+                    @endif
                   @endauth
 
                   @guest
