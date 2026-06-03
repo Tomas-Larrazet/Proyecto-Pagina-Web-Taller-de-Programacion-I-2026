@@ -40,7 +40,7 @@
                                     <th scope="col" colspan="2">Producto</th>
                                     <th scope="col">Precio</th>
                                     <th scope="col" class="text-center">Cantidad</th>
-                                    <th scope="col">Subtotal</th>
+                                    <th scope="col" class="text-center">Subtotal</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -62,8 +62,28 @@
                                                 {{ $item['cantidad'] }}
                                             </span>
                                         </td>
-                                        <td class="py-3 fw-bold text-dark">
-                                            ${{ number_format($item['precio'] * $item['cantidad'], 2, ',', '.') }}
+                                        <td class="py-3 text-center align-middle">
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                
+                                                <form action="{{ route('carrito.actualizar', $id) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    <input type="hidden" name="accion" value="restar">
+                                                    <button type="submit" class="btn btn-sm btn-outline-dark" {{ $item['cantidad'] <= 1 ? 'disabled' : '' }}>
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                </form>
+
+                                                <span class="fw-bold fs-5 px-2">{{ $item['cantidad'] }}</span>
+
+                                                <form action="{{ route('carrito.actualizar', $id) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    <input type="hidden" name="accion" value="sumar">
+                                                    <button type="submit" class="btn btn-sm btn-outline-dark">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
                                         </td>
                                         <td class="py-3 text-end">
                                             <form action="{{ route('carrito.eliminar', $id) }}" method="POST" class="d-inline">

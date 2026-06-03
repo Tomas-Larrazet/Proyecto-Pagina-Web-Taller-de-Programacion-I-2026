@@ -16,6 +16,6 @@ class Consulta extends Model
         'nombre',
         'email',
         'mensaje',
-        'id',
+        'user_id',
     ];
 }

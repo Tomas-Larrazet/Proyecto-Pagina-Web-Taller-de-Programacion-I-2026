@@ -8,7 +8,7 @@
   <div class="row">
       
     <div class="col-lg-2 col-md-4 col-12 mb-4">
-      <div class="sticky-top" style="top: 250px; z-index: 1020;">
+      <div class="sticky-top" style="top: 40px; z-index: 1020;">
         <div class="bg-light p-3 rounded shadow-sm">          
 
           <h5 class="mb-3 fw-bold">Categorías</h5>

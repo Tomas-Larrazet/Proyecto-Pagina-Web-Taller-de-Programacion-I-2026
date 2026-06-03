@@ -178,4 +178,46 @@ class AdminController extends Controller
 
         return redirect()->route('admin.usuarios.index')->with('success', '¡Nuevo Administrador creado con éxito!');
     }
+
+    // Da de baja a un usuario o administrador
+    public function destroyUser($id)
+    {
+        $usuario = User::findOrFail($id);
+
+        //Evitamos que el administrador logueado se borre a sí mismo
+        if ($usuario->id === auth()->id()) {
+            return back()->with('error', 'Por seguridad, no podés dar de baja tu propia cuenta.');
+        }
+
+        // Eliminamos al usuario 
+        $usuario->delete();
+
+        return back()->with('success', 'El usuario ha sido dado de baja correctamente.');
+    }
+
+    // Muestra el formulario para crear una categoría
+    public function createCategoria()
+    {
+        return view('admin.categorias.create');
+    }
+
+    // Nueva categoria
+    public function storeCategoria(Request $request)
+    {
+        // Validamos que no envíen el campo vacío
+        $request->validate([
+            'nombre' => 'required|string|max:255|unique:categorias,nombre',
+        ], [
+            'nombre.required' => 'El nombre de la categoría es obligatorio.',
+            'nombre.unique' => 'Ya existe una categoría con este nombre.'
+        ]);
+
+        // Creamos la categoría
+        Categoria::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        // Redirigimos de vuelta al panel de productos 
+        return redirect()->route('admin.productos.index')->with('success', '¡Nueva categoría creada con éxito!');
+    }
 }

@@ -52,7 +52,7 @@ class CarritoController extends Controller
     {
         $carrito = session()->get('carrito', []);
         
-        // Calculamos el total
+        // Calcular el total
         $total = 0;
         foreach ($carrito as $item) {
             $total += $item['precio'] * $item['cantidad'];
@@ -81,7 +81,7 @@ class CarritoController extends Controller
         return back()->with('success', 'El carrito ha sido vaciado.');
     }
 
-    // 5. CONFIRMAR COMPRA (El paso mágico a la Base de Datos)
+    // 5. CONFIRMAR COMPRA 
     public function comprar()
     {
         $carrito = session()->get('carrito');
@@ -134,5 +134,38 @@ class CarritoController extends Controller
             DB::rollBack();
             return back()->with('error', 'Ocurrió un error al procesar tu compra. Por favor, intenta de nuevo.');
         }
+    }
+
+    // ACTUALIZAR CANTIDADES 
+    public function actualizar(Request $request, $id)
+    {
+        $carrito = session()->get('carrito');
+
+        if (isset($carrito[$id])) {
+            $producto = \App\Models\Producto::find($id);
+            $accion = $request->input('accion');
+
+            if ($accion === 'sumar') {
+                // Verificamos que haya stock suficiente para sumar otro
+                if ($carrito[$id]['cantidad'] < $producto->stock) {
+                    $carrito[$id]['cantidad']++;
+                    session()->put('carrito', $carrito);
+                    return back()->with('success', 'Cantidad actualizada.');
+                } else {
+                    return back()->with('error', 'No hay más stock disponible de este producto.');
+                }
+            } elseif ($accion === 'restar') {
+                // Solo restamos si hay más de 1. Si es 1, se usa el botón de la papelera para eliminar.
+                if ($carrito[$id]['cantidad'] > 1) {
+                    $carrito[$id]['cantidad']--;
+                    session()->put('carrito', $carrito);
+                    return back()->with('success', 'Cantidad reducida.');
+                } else {
+                    return back()->with('error', 'La cantidad mínima es 1. Usa el ícono de basura si querés quitar el producto.');
+                }
+            }
+        }
+
+        return back();
     }
 }

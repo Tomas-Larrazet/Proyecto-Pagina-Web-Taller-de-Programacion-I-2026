@@ -30,6 +30,7 @@
                         <th>Correo Electrónico</th>
                         <th>Fecha de Registro</th>
                         <th>Rol</th>
+                        <th class="text-center">Acciones</th> </tr>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,11 +40,26 @@
                             <td class="fw-bold">{{ $usuario->name }}</td>
                             <td><a href="mailto:{{ $usuario->email }}" class="text-decoration-none">{{ $usuario->email }}</a></td>
                             <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
+                            
                             <td>
                                 @if($usuario->rol === 'admin' || $usuario->is_admin)
                                     <span class="badge bg-danger">Administrador</span>
                                 @else
                                     <span class="badge bg-primary">Cliente</span>
+                                @endif
+                            </td> <td class="text-center">
+                                @if($usuario->id !== auth()->id())
+                                    <form action="{{ route('admin.usuarios.destroy', $usuario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que querés dar de baja a {{ $usuario->name }}? Esta acción le quitará el acceso al panel.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Dar de baja">
+                                            <i class="bi bi-trash3-fill"></i> Baja
+                                        </button>
+                                    </form>
+                                @else
+                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Es tu cuenta actual">
+                                        <i class="bi bi-person-check-fill"></i> Actual
+                                    </button>
                                 @endif
                             </td>
                         </tr>

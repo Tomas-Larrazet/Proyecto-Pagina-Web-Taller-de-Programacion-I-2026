@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Fecha:</strong> {{ $pedido->created_at->format('d/m/Y H:i') }}</p>
-                    <p><strong>Cliente ID:</strong> #{{ $pedido->user_id }}</p>
+                    <p><strong>Cliente:</strong> {{ $pedido->user->email ?? 'Usuario dado de baja' }} <span class="text-muted small">(ID: #{{ $pedido->user_id }})</span></p>
                     <p><strong>Estado:</strong> <span class="badge bg-warning text-dark">{{ ucfirst($pedido->estado ?? 'Pendiente') }}</span></p>
                     <hr>
                     <h4 class="text-success mb-0">Total: ${{ number_format($pedido->total, 2) }}</h4>
@@ -53,9 +53,12 @@
                             @forelse($items as $item)
                                 <tr>
                                     <td>{{ $item->nombre ?? $item->producto?->nombre ?? 'Producto ID: ' . ($item->producto_id ?? 'N/A') }}</td>
-                                    <td>${{ number_format($item->precio ?? $item->pivot?->precio ?? 0, 2) }}</td>
-                                    <td>{{ $item->cantidad ?? $item->pivot?->cantidad ?? 1 }} un.</td>
-                                    <td class="fw-bold">${{ number_format(($item->precio ?? $item->pivot?->precio ?? 0) * ($item->cantidad ?? $item->pivot?->cantidad ?? 1), 2) }}</td>
+                                    
+                                    <td>${{ number_format($item->precio_unitario ?? 0, 2, ',', '.') }}</td>
+                                    
+                                    <td>{{ $item->cantidad ?? 1 }} un.</td>
+                                    
+                                    <td class="fw-bold">${{ number_format(($item->precio_unitario ?? 0) * ($item->cantidad ?? 1), 2, ',', '.') }}</td>
                                 </tr>
                             @empty
                                 <tr>

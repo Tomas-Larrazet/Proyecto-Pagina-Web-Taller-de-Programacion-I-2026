@@ -9,10 +9,11 @@
 <body class="bg-light">
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <h2>Gestión de Productos</h2>
-        <div>
+        <div class="d-flex gap-2">
             <a href="{{ route('admin.panel') }}" class="btn btn-secondary">Volver al Panel</a>
+            <a href="{{ route('admin.categorias.create') }}" class="btn btn-outline-warning text-dark fw-bold">+ Nueva Categoría</a>
             <a href="{{ route('admin.productos.create') }}" class="btn btn-success">+ Nuevo Producto</a>
         </div>
     </div>

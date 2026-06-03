@@ -24,7 +24,7 @@
                     <tr>
                         <th>N° Pedido</th>
                         <th>Fecha</th>
-                        <th>Cliente (ID)</th>
+                        <th>Cliente </th>
                         <th>Total</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -32,11 +32,11 @@
                 </thead>
                 <tbody>
                     @forelse($ventas as $venta)
-                        <tr>
+                        <tr>s
                             <td>#{{ str_pad($venta->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $venta->created_at->format('d/m/Y H:i') }}</td>
-                            <td>Usuario #{{ $venta->user_id }}</td>
-                            <td class="fw-bold">${{ number_format($venta->total, 2) }}</td>
+                            <td>{{ $venta->user->email ?? 'Usuario dado de baja' }}</td>
+                            <td class="fw-bold">${{ number_format($venta->total, 2, ',', '.') }}</td>
                             <td>
                                 <span class="badge bg-{{ $venta->estado == 'pendiente' ? 'warning' : ($venta->estado == 'completado' ? 'success' : 'secondary') }}">
                                     {{ ucfirst($venta->estado ?? 'Completado') }}
