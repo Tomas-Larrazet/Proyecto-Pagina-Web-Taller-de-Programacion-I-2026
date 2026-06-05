@@ -28,7 +28,21 @@ class ProductoController extends Controller
             });
         }
 
-        // 4. FILTRO C: Ordenamiento por Precio
+        // 4. FILTRO C: ¿El usuario pidió ver solo lo que hay en stock?
+        if ($request->has('en_stock') && $request->en_stock == '1') {
+            $query->where('stock', '>', 0);
+        }
+
+        // 5. FILTRO NUEVO: Rango de Precios (Mínimo y Máximo)
+        if ($request->has('precio_min') && $request->precio_min != '') {
+            $query->where('precio', '>=', $request->precio_min);
+        }
+        
+        if ($request->has('precio_max') && $request->precio_max != '') {
+            $query->where('precio', '<=', $request->precio_max);
+        }
+
+        // 6. FILTRO C: Ordenamiento por Precio
         if ($request->has('orden_precio') && $request->orden_precio != '') {
             if ($request->orden_precio == 'menor') {
                 $query->orderBy('precio', 'asc'); // Ascendente: de más barato a más caro
@@ -40,13 +54,13 @@ class ProductoController extends Controller
             $query->orderBy('id', 'desc'); 
         }
 
-        // 5. Obtenemos los productos con todos los filtros aplicados
+        // 7. Obtenemos los productos con todos los filtros aplicados
         $productos = $query->get();
 
-        // 6. Buscamos TODAS las categorías para el Dropdown lateral
+        // 8. Buscamos TODAS las categorías para el Dropdown lateral
         $categoriasDropdown = Categoria::all();
 
-        // 7. Mandamos ambos datos a la vista 'catalogo'
+        // 9. Mandamos ambos datos a la vista 'catalogo'
         return view('catalogo', compact('productos', 'categoriasDropdown'));
     }
 }

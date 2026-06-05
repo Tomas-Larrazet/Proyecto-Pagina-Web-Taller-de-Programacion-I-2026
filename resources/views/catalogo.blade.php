@@ -36,26 +36,18 @@
      
     <div class="col-lg-10 col-md-8 col-12">
       <div class="row mb-4">
-
-        <div class="row mb-4">
           <div class="col-12">
             
-            @if(request('categoria') || request('buscar'))
-              <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+            @if(request('categoria') || request('buscar') || request('en_stock') || request('precio_min') || request('precio_max'))
+              <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
                 <span class="text-muted small fw-bold me-1"><i class="bi bi-funnel-fill"></i> Filtros activos:</span>
                 
                 @if(request('categoria'))
-                  @php
-                    // Buscamos el nombre de la categoría usando el ID que está en la URL
-                    $categoriaSeleccionada = $categoriasDropdown->firstWhere('id', request('categoria'));
-                  @endphp
-                  
+                  @php $categoriaSeleccionada = $categoriasDropdown->firstWhere('id', request('categoria')); @endphp
                   @if($categoriaSeleccionada)
                     <span class="badge bg-warning text-dark border border-warning shadow-sm d-flex align-items-center px-3 py-2 rounded-pill">
                       Categoría: {{ $categoriaSeleccionada->nombre }}
-                      <a href="{{ route('catalogo.index', ['buscar' => request('buscar')]) }}" class="text-dark ms-2" title="Quitar filtro">
-                        <i class="bi bi-x-circle-fill fs-6"></i>
-                      </a>
+                      <a href="{{ route('catalogo.index', request()->except('categoria')) }}" class="text-dark ms-2" title="Quitar filtro"><i class="bi bi-x-circle-fill fs-6"></i></a>
                     </span>
                   @endif
                 @endif
@@ -63,9 +55,24 @@
                 @if(request('buscar'))
                   <span class="badge bg-dark text-white shadow-sm d-flex align-items-center px-3 py-2 rounded-pill">
                     Búsqueda: "{{ request('buscar') }}"
-                    <a href="{{ route('catalogo.index', ['categoria' => request('categoria')]) }}" class="text-white ms-2" title="Quitar filtro">
-                      <i class="bi bi-x-circle-fill fs-6"></i>
-                    </a>
+                    <a href="{{ route('catalogo.index', request()->except('buscar')) }}" class="text-white ms-2" title="Quitar filtro"><i class="bi bi-x-circle-fill fs-6"></i></a>
+                  </span>
+                @endif
+
+                @if(request('en_stock') == '1')
+                  <span class="badge bg-success text-white shadow-sm d-flex align-items-center px-3 py-2 rounded-pill">
+                    Solo en stock
+                    <a href="{{ route('catalogo.index', request()->except('en_stock')) }}" class="text-white ms-2" title="Quitar filtro"><i class="bi bi-x-circle-fill fs-6"></i></a>
+                  </span>
+                @endif
+
+                @if(request('precio_min') || request('precio_max'))
+                  <span class="badge bg-info text-dark shadow-sm d-flex align-items-center px-3 py-2 rounded-pill" style="background-color: #FAEDC8 !important;">
+                    Precio: 
+                    @if(request('precio_min')) Mín ${{ request('precio_min') }} @endif
+                    @if(request('precio_min') && request('precio_max')) - @endif
+                    @if(request('precio_max')) Máx ${{ request('precio_max') }} @endif
+                    <a href="{{ route('catalogo.index', request()->except(['precio_min', 'precio_max'])) }}" class="text-dark ms-2" title="Quitar filtro"><i class="bi bi-x-circle-fill fs-6"></i></a>
                   </span>
                 @endif
                 
@@ -73,33 +80,64 @@
               </div>
             @endif
 
-            <form action="{{ route('catalogo.index') }}" method="GET" class="d-flex gap-2">
+            <form action="{{ route('catalogo.index') }}" method="GET">
               
               @if(request('categoria'))
                 <input type="hidden" name="categoria" value="{{ request('categoria') }}">
               @endif
 
-              <div class="input-group shadow-sm">
-                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+              <div class="d-flex gap-2 mb-3">
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
 
-                <input type="text" name="buscar" class="form-control border-start-0 border-end-0 Border-color-black" 
-                      placeholder="Buscar {{ request('categoria') && isset($categoriaSeleccionada) ? 'en ' . $categoriaSeleccionada->nombre : 'productos' }}..." 
-                      value="{{ request('buscar') }}">
+                  <input type="text" name="buscar" class="form-control border-start-0 border-end-0 border-dark" 
+                        placeholder="Buscar {{ request('categoria') && isset($categoriaSeleccionada) ? 'en ' . $categoriaSeleccionada->nombre : 'productos' }}..." 
+                        value="{{ request('buscar') }}">
 
-                <select name="orden_precio" class="form-select btn fw-bold px-4 border-start-0 shadow" style="max-width: 180px; background-color: rgb(248, 233, 69);">
-                  <option value="Precio" style=" background-color: rgb(255, 243, 116);">Precio</option>
-                  <option value="menor " style=" background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'menor' ? 'selected' : '' }}>Menor a Mayor $  </option>
-                  <option value="mayor" style=" background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'mayor' ? 'selected' : '' }}>Mayor a Menor $  </option>
-                </select>
+                  <select name="orden_precio" class="form-select btn fw-bold px-4 border-start-0 shadow-sm border-dark" style="max-width: 180px; background-color: rgb(248, 233, 69);">
+                    <option value="" style="background-color: rgb(255, 243, 116);">Ordenar por...</option>
+                    <option value="menor" style="background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'menor' ? 'selected' : '' }}>Menor a Mayor $</option>
+                    <option value="mayor" style="background-color: rgb(255, 243, 116);" {{ request('orden_precio') == 'mayor' ? 'selected' : '' }}>Mayor a Menor $</option>
+                  </select>
 
-                <button type="submit" class="btn btn-warning fw-bold px-4">Buscar</button>
+                  <button type="submit" class="btn btn-warning fw-bold px-4 border-dark">Buscar</button>
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap gap-4 align-items-center bg-white p-3 rounded shadow-sm border">
+                
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" name="en_stock" value="1" id="filtroStock" onchange="this.form.submit()" {{ request('en_stock') == '1' ? 'checked' : '' }}>
+                    <label class="form-check-label fw-bold text-dark" for="filtroStock">
+                        Ocultar sin stock
+                    </label>
+                </div>
+
+                <div class="vr d-none d-md-block"></div> <div class="d-flex align-items-center gap-2">
+                    <span class="fw-bold text-dark small">Rango de Precio:</span>
+                    
+                    <div class="input-group input-group-sm" style="max-width: 110px;">
+                        <span class="input-group-text bg-light border-warning">$</span>
+                        <input type="number" class="form-control border-warning" name="precio_min" placeholder="Mín" min="0" value="{{ request('precio_min') }}">
+                    </div>
+                    
+                    <span class="text-muted fw-bold">-</span>
+                    
+                    <div class="input-group input-group-sm" style="max-width: 110px;">
+                        <span class="input-group-text bg-light border-warning">$</span>
+                        <input type="number" class="form-control border-warning" name="precio_max" placeholder="Máx" min="0" value="{{ request('precio_max') }}">
+                    </div>
+
+                    <button type="submit" class="btn btn-sm btn-outline-dark fw-bold px-3">Aplicar</button>
+                </div>
+
               </div>
 
             </form>
-          </div>
-        </div>
 
+          </div>
       </div>
+    </div>
 
       <div class="row ">
         
