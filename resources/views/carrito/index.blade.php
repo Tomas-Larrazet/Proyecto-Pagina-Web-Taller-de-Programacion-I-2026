@@ -45,51 +45,50 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($carrito as $id => $item)
-                                    <tr class="border-bottom">
-                                        <td style="width: 80px;" class="py-3">
-                                            <img src="{{ asset($item['url_imagen']) }}" alt="{{ $item['nombre'] }}" 
-                                                 class="img-fluid rounded-3 border" style="object-fit: cover; height: 65px; width: 65px;">
+                                @foreach($carrito as $item)
+                                    <tr>
+                                        <td class="ps-4 py-3">
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset($item->producto->url_imagen ?? 'images/default.jpg') }}" alt="{{ $item->producto->nombre }}" class="rounded shadow-sm me-3" style="width: 70px; height: 70px; object-fit: cover;">
+                                                <span class="fw-bold text-dark" style="max-width: 200px;">{{ $item->producto->nombre }}</span>
+                                            </div>
                                         </td>
-                                        <td class="py-3">
-                                            <h6 class="fw-bold mb-0 text-dark">{{ $item['nombre'] }}</h6>
+                                        
+                                        <td class="text-center text-muted">
+                                            ${{ number_format($item->producto->precio, 2, ',', '.') }}
                                         </td>
-                                        <td class="py-3 text-muted">
-                                            ${{ number_format($item['precio'], 2, ',', '.') }}
-                                        </td>
-                                        <td class="py-3 text-center fw-bold text-dark">
-                                            <span class="badge bg-light text-dark border px-3 py-2 rounded-3 fs-6">
-                                                {{ $item['cantidad'] }}
-                                            </span>
-                                        </td>
-                                        <td class="py-3 text-center align-middle">
+                                        
+                                        <td class="py-3 text-center">
                                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                                
-                                                <form action="{{ route('carrito.actualizar', $id) }}" method="POST" class="m-0">
+                                                <form action="{{ url('/carrito/actualizar/' . $item->producto_id) }}" method="POST" class="m-0">
                                                     @csrf
                                                     <input type="hidden" name="accion" value="restar">
-                                                    <button type="submit" class="btn btn-sm btn-outline-dark" {{ $item['cantidad'] <= 1 ? 'disabled' : '' }}>
+                                                    <button type="submit" class="btn btn-sm btn-outline-dark" {{ $item->cantidad <= 1 ? 'disabled' : '' }}>
                                                         <i class="bi bi-dash"></i>
                                                     </button>
                                                 </form>
 
-                                                <span class="fw-bold fs-5 px-2">{{ $item['cantidad'] }}</span>
+                                                <span class="fw-bold px-2">{{ $item->cantidad }}</span>
 
-                                                <form action="{{ route('carrito.actualizar', $id) }}" method="POST" class="m-0">
+                                                <form action="{{ url('/carrito/actualizar/' . $item->producto_id) }}" method="POST" class="m-0">
                                                     @csrf
                                                     <input type="hidden" name="accion" value="sumar">
                                                     <button type="submit" class="btn btn-sm btn-outline-dark">
                                                         <i class="bi bi-plus"></i>
                                                     </button>
                                                 </form>
-
                                             </div>
                                         </td>
-                                        <td class="py-3 text-end">
-                                            <form action="{{ route('carrito.eliminar', $id) }}" method="POST" class="d-inline">
+                                        
+                                        <td class="text-center fw-bold text-dark">
+                                            ${{ number_format($item->producto->precio * $item->cantidad, 2, ',', '.') }}
+                                        </td>
+                                        
+                                        <td class="text-center pe-4">
+                                            <form action="{{ url('/carrito/eliminar/' . $item->producto_id) }}" method="POST" class="m-0" onsubmit="return confirm('¿Quitar este producto del carrito?');">
                                                 @csrf
-                                                <button type="submit" class="btn btn-link text-danger p-0 border-0" title="Eliminar del carrito">
-                                                    <i class="bi bi-trash3 fs-5"></i>
+                                                <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar producto">
+                                                    <i class="bi bi-trash fs-5"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -120,8 +119,7 @@
                     
                     <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
                         <span class="text-muted">Total Productos</span>
-                        <span class="fw-bold text-dark">
-                            {{ array_sum(array_column($carrito, 'cantidad')) }} unidades
+                        <span class="fw-bold text-dark">{{ $carrito->sum('cantidad') }} unidades
                         </span>
                     </div>
                     

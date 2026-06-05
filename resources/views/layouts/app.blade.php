@@ -52,11 +52,19 @@
                             <a href="{{ route('carrito.ver') }}" class="btn btn-outline-dark bg-dark position-relative d-flex align-items-center rounded-pill px-3 py-2 border-0 shadow-sm">
                                 <i class="bi bi-cart3 fs-5 text-warning"></i>
                                 <span class="ms-2 d-none d-md-inline fw-bold text-warning">Mi Carrito</span>
-                                @if(session('carrito') && count(session('carrito')) > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
-                                        {{ array_sum(array_column(session('carrito'), 'cantidad')) }}
-                                    </span>
-                                @endif
+                                
+                                @auth
+                                    @php
+                                        // Calculamos cuántos productos tiene este usuario en su carrito
+                                        $cantidadCarrito = \App\Models\Carrito::where('user_id', auth()->id())->sum('cantidad');
+                                    @endphp
+                                    
+                                    @if($cantidadCarrito > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+                                            {{ $cantidadCarrito }}
+                                        </span>
+                                    @endif
+                                @endauth
                             </a>
                         </li>
                         <li class="nav-item dropdown">
@@ -141,6 +149,20 @@
     </footer>
 
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    @auth
+        @php
+            $itemsEnCarrito = \App\Models\Carrito::where('user_id', auth()->id())->sum('cantidad');
+        @endphp
+        
+        @if($itemsEnCarrito > 0)
+            <a href="{{ route('carrito.ver') }}" class="btn shadow-lg position-fixed d-flex align-items-center justify-content-center rounded-circle" style="bottom: 30px; right: 30px; width: 65px; height: 65px; z-index: 1050; background-color: rgb(248, 233, 69); border: 3px solid white; transition: transform 0.2s;">
+                <i class="bi bi-cart-fill fs-3 text-dark"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger fs-6 border border-light shadow-sm">
+                    {{ $itemsEnCarrito }}
+                </span>
+            </a>
+        @endif
+    @endauth
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Detectamos el header y la barra
