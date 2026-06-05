@@ -57,9 +57,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->has('remember'))){
             $request->session()->regenerate(); // Previene ataques de sesión
 
-            // 3. MAGIA DE ROLES: Verificamos quién acaba de entrar
+            // 3.Verificamos quién acaba de entrar
             if (Auth::user()->rol === 'admin') {
-                // Si es el Administrador, lo mandamos a su panel exclusivo
+                // Si es el Administrador, va a su panel exclusivo
                 return redirect()->intended('/admin/panel'); 
             }
 
@@ -68,9 +68,7 @@ class AuthController extends Controller
         }
 
         // 4. Si falla, vuelve atras con el error
-        return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
-        ])->onlyInput('email');
+        return back()->with('error', 'No encontramos ninguna cuenta con esos datos, revisa los datos ingresados o registrate.');
     }
 
     // Cierra la sesion
