@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    @if(empty($carrito))
+    @if(empty($carrito) || count($carrito) == 0)
         <div class="text-center py-5 shadow-sm rounded-4 bg-white border border-light">
             <i class="bi bi-bag-x text-muted mb-3 d-block" style="font-size: 5rem;"></i>
             <h3 class="fw-bold text-secondary">Tu carrito está vacío</h3>
@@ -114,47 +114,63 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm p-4 rounded-4 bg-white position-sticky" style="top: 20px;">
-                    <h5 class="fw-bold text-dark mb-4">Resumen del Pedido</h5>
-                    
-                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
-                        <span class="text-muted">Total Productos</span>
-                        <span class="fw-bold text-dark">{{ $carrito->sum('cantidad') }} unidades
-                        </span>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
-                        <span class="text-muted">Envío</span>
-                        <span class="text-success fw-bold small">¡Gratis!</span>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="h5 fw-bold text-dark mb-0">Total Final</span>
-                        <span class="h4 fw-bold text-success mb-0">
-                            ${{ number_format($total, 2, ',', '.') }}
-                        </span>
-                    </div>
+                <div class="card border-0 shadow-sm rounded-4 bg-light">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-4">Resumen del Pedido</h4>
+                        
+                        <div class="d-flex justify-content-between mb-2 text-muted">
+                            <span>Subtotal ({{ $carrito->sum('cantidad') }} un.)</span>
+                            <span class="fw-bold text-dark">${{ number_format($subtotal, 2, ',', '.') }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-3 text-muted">
+                            <span>Envío</span>
+                            <span class="text-success fw-bold">¡Gratis!</span>
+                        </div>
 
-                    @if(auth()->user()->rol == 'admin') <button type="button" class="btn btn-secondary w-100 fw-bold py-3 shadow-sm rounded-3 text-uppercase" style="letter-spacing: 0.5px;" disabled>
-                            <i class="bi bi-ban me-1 fs-5 align-middle"></i> Los administradores no pueden comprar
-                        </button>
-                    @else
-                        <form action="{{ route('carrito.comprar') }}" method="POST">
+                        @if($porcentajeDescuento > 0)
+                            <div class="d-flex justify-content-between mb-3 text-success fw-bold">
+                                <span>Descuento ({{ $porcentajeDescuento }}%)</span>
+                                <span>- ${{ number_format($montoDescuento, 2, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <h4 class="fw-bold m-0 text-dark">Total Final</h4>
+                            <h4 class="text-success fw-bold m-0">${{ number_format($total, 2, ',', '.') }}</h4>
+                        </div>
+
+                        <div class="mb-4 p-3 bg-white rounded shadow-sm border">
+                            <label class="form-label fw-bold small text-dark mb-2">¿Tenés un código de descuento?</label>
+                            <form action="{{ route('carrito.cupon') }}" method="POST" class="d-flex gap-2">
+                                @csrf
+                                <input type="text" name="codigo_cupon" class="form-control border-warning" placeholder="Ej: BRIGHTNESS" required {{ $porcentajeDescuento > 0 ? 'disabled' : '' }}>
+                                <button type="submit" class="btn btn-dark fw-bold px-3" {{ $porcentajeDescuento > 0 ? 'disabled' : '' }}>Aplicar</button>
+                            </form>
+                            @if($porcentajeDescuento > 0)
+                                <small class="text-success fw-bold mt-2 d-block"><i class="bi bi-check-circle-fill"></i> ¡Cupón aplicado!</small>
+                            @endif
+                        </div>
+                        
+                        <form action="{{ url('/carrito/comprar') }}" method="POST" class="d-grid">
                             @csrf
-                            <button type="submit" class="btn btn-warning w-100 fw-bold py-3 shadow-sm rounded-3 btn-confirmar-compra text-uppercase" style="letter-spacing: 0.5px;">
-                                <i class="bi bi-bag-check-fill me-1 fs-5 align-middle"></i> Confirmar Compra
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm" style="background-color: rgb(248, 233, 69);">
+                                Confirmar Compra
                             </button>
                         </form>
-                    @endif
 
-                    <div class="text-center mt-3">
-                        <span class="text-muted small"><i class="bi bi-shield-lock-fill text-muted me-1"></i> Pago 100% Seguro</span>
+                        <div class="text-center mt-4">
+                            <span class="text-muted small fw-bold">
+                                <i class="bi bi-shield-lock-fill text-warning me-1 fs-5 align-middle"></i> Pago 100% Seguro
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        </div>
-    @endif
-</div>
-
+        </div> 
+        @endif
+     </div>
 @endsection

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Pedido;        
 use App\Models\DetallePedido; 
-use App\Models\Carrito; // ¡Importamos el modelo nuevo!
+use App\Models\Carrito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -17,17 +17,20 @@ class CarritoController extends Controller
     {
         $producto = Producto::findOrFail($id);
 
+        // ¡Bloqueo para Administradores!
+        if (Auth::user()->rol === 'admin') { 
+            return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
+        }
+
         if ($producto->stock <= 0) {
             return back()->with('error', 'Lamentablemente no hay stock de este producto.');
         }
 
-        // Buscamos si ESTE usuario ya tiene ESTE producto en su carrito
         $itemCarrito = Carrito::where('user_id', Auth::id())
                               ->where('producto_id', $id)
                               ->first();
 
         if ($itemCarrito) {
-            // Ya lo tiene: le sumamos 1 si hay stock
             if ($itemCarrito->cantidad < $producto->stock) {
                 $itemCarrito->cantidad++;
                 $itemCarrito->save();
@@ -36,7 +39,6 @@ class CarritoController extends Controller
                 return back()->with('error', 'No puedes agregar más unidades del stock disponible.');
             }
         } else {
-            // No lo tiene: creamos el registro en la base de datos
             Carrito::create([
                 'user_id' => Auth::id(),
                 'producto_id' => $id,
@@ -49,30 +51,33 @@ class CarritoController extends Controller
     // 2. VER CARRITO
     public function ver()
     {
-        // Traemos todo el carrito del usuario logueado, e incluimos los datos del producto
         $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
         
-        $total = 0;
+        $subtotal = 0;
         foreach ($carrito as $item) {
-            $total += $item->producto->precio * $item->cantidad;
+            $subtotal += $item->producto->precio * $item->cantidad;
         }
 
-        return view('carrito.index', compact('carrito', 'total'));
+        // Revisamos si el cliente tiene un descuento guardado en sesión
+        $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
+        $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
+        
+        // Calculamos el total final
+        $total = $subtotal - $montoDescuento;
+
+        return view('carrito.index', compact('carrito', 'subtotal', 'montoDescuento', 'total', 'porcentajeDescuento'));
     }
 
     // 3. ELIMINAR UN PRODUCTO
     public function eliminar($id)
     {
-        // Borramos el registro que coincide con el ID del producto y el ID del usuario
         Carrito::where('user_id', Auth::id())->where('producto_id', $id)->delete();
-
         return back()->with('success', 'Producto eliminado del carrito.');
     }
 
     // 4. VACIAR TODO EL CARRITO
     public function vaciar()
     {
-        // Borramos TODOS los registros de este usuario
         Carrito::where('user_id', Auth::id())->delete();
         return back()->with('success', 'El carrito ha sido vaciado.');
     }
@@ -82,6 +87,13 @@ class CarritoController extends Controller
     {
         $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
 
+        // Bloqueo de seguridad extra por si intentan forzar la URL
+        if (Auth::user()->rol === 'admin') { 
+            return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
+        }
+
+        $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
+
         if ($carrito->isEmpty()) {
             return back()->with('error', 'Tu carrito está vacío.');
         }
@@ -89,15 +101,20 @@ class CarritoController extends Controller
         DB::beginTransaction();
 
         try {
-            $total = 0;
+            $subtotal = 0;
             foreach ($carrito as $item) {
-                $total += $item->producto->precio * $item->cantidad;
+                $subtotal += $item->producto->precio * $item->cantidad;
             }
 
-            // A) Creamos el PEDIDO general
+            // Aplicamos el descuento al total real que se va a guardar en la BD
+            $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
+            $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
+            $totalFinal = $subtotal - $montoDescuento;
+
+            // A) Creamos el PEDIDO general (Guardando el Total Final con descuento)
             $pedido = Pedido::create([
                 'user_id' => Auth::id(),
-                'total' => $total,
+                'total' => $totalFinal,
                 'estado' => 'pendiente',
             ]);
 
@@ -118,6 +135,9 @@ class CarritoController extends Controller
 
             // C) Vaciamos el carrito de la base de datos
             Carrito::where('user_id', Auth::id())->delete();
+
+            // Limpiamos el cupón usado para que no aplique a la próxima compra
+            session()->forget('descuento_porcentaje');
 
             DB::commit();
 
@@ -160,5 +180,18 @@ class CarritoController extends Controller
         }
 
         return back();
+    }
+
+    // 7. APLICAR CUPÓN DE DESCUENTO
+    public function aplicarCupon(Request $request)
+    {
+        $codigo = strtoupper($request->input('codigo_cupon'));
+
+        if ($codigo === 'BRIGHTNESS') {
+            session()->put('descuento_porcentaje', 10); 
+            return back()->with('success', '¡Cupón BRIGHTNESS aplicado! Tenés un 10% de descuento.');
+        }
+
+        return back()->with('error', 'El código ingresado no es válido.');
     }
 }

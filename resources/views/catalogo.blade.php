@@ -132,17 +132,23 @@
                 <h5 class="card-title fw-bold text-dark mb-3">{{ $producto->nombre }}</h5>
                 <h4 class="text-success fw-bold mt-auto mb-3">${{ number_format($producto->precio, 2, ',', '.') }}</h4>
                 
-                @if($producto->stock > 0)
-                  <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto">
-                    @csrf
-                    <button type="submit" class="btn btn-warning w-100 fw-bold shadow-sm";>
-                      <i class="bi bi-cart-plus me-2"></i>Agregar
-                    </button>
-                  </form>
-                @else
-                  <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
-                    Sin Stock
+                @if(auth()->check() && auth()->user()->rol === 'admin')
+                  <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
+                    <i class="bi bi-shield-lock me-2"></i>Modo Admin
                   </button>
+                  
+                  @elseif($producto->stock > 0)
+                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto">
+                      @csrf
+                      <button type="submit" class="btn btn-warning w-100 fw-bold shadow-sm" style="background-color: rgb(248, 233, 69);">
+                        <i class="bi bi-cart-plus me-2"></i>Agregar
+                      </button>
+                    </form>
+                    
+                  @else
+                    <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
+                      Sin Stock
+                    </button>
                 @endif
               </div>
             </div>

@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
     Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
     Route::post('/carrito/actualizar/{id}', [App\Http\Controllers\CarritoController::class, 'actualizar'])->name('carrito.actualizar');
+    Route::post('/carrito/cupon', [CarritoController::class, 'aplicarCupon'])->name('carrito.cupon');
 });
 
 Route::get('/admin/panel', [AdminController::class, 'index'])->middleware('auth')->name('admin.panel');

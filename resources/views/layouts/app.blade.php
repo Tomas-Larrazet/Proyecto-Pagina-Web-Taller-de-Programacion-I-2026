@@ -187,6 +187,69 @@
         });
     });
 </script>
+    <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-0 p-4">
+        
+        <div class="modal-header border-0 pb-0 justify-content-end p-2">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="cerrarPromoX"></button>
+        </div>
+        
+        <div class="modal-body text-center pt-0 px-md-5">
+            
+            <h3 class="fw-bold tracking-widest mb-1" style="letter-spacing: 4px;">BRIGHTNESS STORE</h3>
+            <h2 class="fw-bold mb-4">Tiene un regalo para vos.</h2>
+            
+            <p class="text-muted mb-2">REGISTRÁNDOTE</p>
+            <p class="text-muted mb-4">Aprovechá un descuento en tu primera compra.</p>
+            
+            <p class="text-muted mb-1">Ingresando el código:</p>
+            <h2 class="fw-bold mb-3" style="color: #38d381;">Brightness</h2>
+            <p class="text-muted mb-4">en tu carrito de compras.</p>
+            
+            <a href="{{ route('register') }}" class="btn w-100 fw-bold py-2 mb-3 text-white rounded-0 shadow-sm" style="background-color: #38d381; font-size: 1.1rem;" id="btnIrRegistro">
+                Quiero registrarme
+            </a>
+
+            <button type="button" class="btn btn-link text-danger text-decoration-none fw-bold" data-bs-dismiss="modal" id="cerrarPromoTxt">
+                No, gracias
+            </button>
+            
+            <p class="text-dark small mt-4 mb-0">Cupón válido para nuevos suscriptores.</p>
+        </div>
+        
+        </div>
+    </div>
+</div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                
+                // Verificamos en la memoria del navegador si ya vio la promo
+                if (!localStorage.getItem('promo_brightness_vista')) {
+                
+                // Esperamos 2 segundos y mostramos el cartel
+                setTimeout(function() {
+                    var myPromoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+                    myPromoModal.show();
+                }, 1000);
+                
+                }
+
+                // LISTA DE BOTONES QUE SILENCIAN LA PROMO:
+                // 1. La cruz de arriba
+                document.getElementById('cerrarPromoX').addEventListener('click', silenciarPromo);
+                // 2. El texto "No, gracias"
+                document.getElementById('cerrarPromoTxt').addEventListener('click', silenciarPromo);
+                // 3. ¡NUEVO! El botón verde de registrarse
+                document.getElementById('btnIrRegistro').addEventListener('click', silenciarPromo);
+
+                function silenciarPromo() {
+                // Esto guarda una marca invisible en su navegador
+                localStorage.setItem('promo_brightness_vista', 'true');
+                }
+                
+            });
+    </script>
 </body>
 </html>
 
