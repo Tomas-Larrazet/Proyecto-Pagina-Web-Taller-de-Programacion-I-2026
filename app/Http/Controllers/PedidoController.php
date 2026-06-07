@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PedidoController extends Controller
 {
@@ -19,5 +20,19 @@ class PedidoController extends Controller
                          ->get();
 
         return view('mis-compras', compact('pedidos'));
+    }
+
+    public function descargarFactura($id)
+    {
+        // Buscamos el pedido asegurándonos de que sea del usuario actual
+        $pedido = \App\Models\Pedido::with('detalles.producto', 'user')
+                                    ->where('user_id', auth()->id())
+                                    ->findOrFail($id);
+
+        // Transformamos la vista HTML en PDF
+        $pdf = Pdf::loadView('pedidos.factura', compact('pedido'));
+
+        // Forzamos la descarga
+        return $pdf->download('Comprobante_Brightness_Nro_'.$pedido->id.'.pdf');
     }
 }

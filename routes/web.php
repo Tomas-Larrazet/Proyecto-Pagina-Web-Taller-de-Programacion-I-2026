@@ -55,7 +55,6 @@ Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::get('/mis-compras', [PedidoController::class, 'index'])->middleware('auth')->name('mis-compras');
 
 Route::middleware('auth')->group(function () {
-    
     // Rutas para editar perfil
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
@@ -70,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
     Route::post('/carrito/actualizar/{id}', [App\Http\Controllers\CarritoController::class, 'actualizar'])->name('carrito.actualizar');
     Route::post('/carrito/cupon', [CarritoController::class, 'aplicarCupon'])->name('carrito.cupon');
+
+    Route::get('/compra-exitosa/{id}', [CarritoController::class, 'compraExitosa'])->name('compra.exitosa');
+    Route::get('/mis-compras/factura/{id}', [App\Http\Controllers\PedidoController::class, 'descargarFactura'])->name('pedidos.factura');
 });
 
 Route::get('/admin/panel', [AdminController::class, 'index'])->middleware('auth')->name('admin.panel');

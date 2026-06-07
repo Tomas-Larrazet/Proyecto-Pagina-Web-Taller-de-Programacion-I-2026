@@ -141,7 +141,10 @@ class CarritoController extends Controller
 
             DB::commit();
 
-            return redirect('/mis-compras')->with('success', '¡Compra realizada con éxito! Gracias por elegir Brightness.');
+            DB::commit();
+
+            // Pasamos el ID del pedido recién creado a la nueva ruta
+            return redirect()->route('compra.exitosa', $pedido->id);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -188,10 +191,31 @@ class CarritoController extends Controller
         $codigo = strtoupper($request->input('codigo_cupon'));
 
         if ($codigo === 'BRIGHTNESS') {
+            
+            // ¡LA NUEVA VALIDACIÓN!
+            // Contamos cuántos pedidos tiene este usuario en su historial
+            $comprasPrevias = \App\Models\Pedido::where('user_id', auth()->id())->count();
+
+            if ($comprasPrevias > 0) {
+                // Si tiene 1 o más, le rebotamos el cupón
+                return back()->with('error', 'El cupón BRIGHTNESS es válido únicamente para tu primera compra.');
+            }
+
+            // Si tiene 0 compras, le damos el descuento
             session()->put('descuento_porcentaje', 10); 
             return back()->with('success', '¡Cupón BRIGHTNESS aplicado! Tenés un 10% de descuento.');
         }
 
         return back()->with('error', 'El código ingresado no es válido.');
     }
+
+    //Redireccion a pagina exitosa
+    public function compraExitosa($id)
+    {
+        // Buscamos el pedido con sus detalles para mostrarlos en la pantalla de agradecimiento
+        $pedido = Pedido::with('detalles.producto')->where('user_id', Auth::id())->findOrFail($id);
+        
+        return view('carrito.exito', compact('pedido'));
+    }
+
 }
