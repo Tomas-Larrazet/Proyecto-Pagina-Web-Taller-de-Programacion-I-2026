@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                     @forelse($ventas as $venta)
-                        <tr>s
+                        <tr>
                             <td>#{{ str_pad($venta->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $venta->created_at->format('d/m/Y H:i') }}</td>
                             <td>{{ $venta->user->email ?? 'Usuario dado de baja' }}</td>

@@ -22,6 +22,7 @@
                     <li class="nav-item"><a class="navbar-brand text-light" href="{{ url('/') }}" target="_blank">💎 Brightness.Store | Ver Tienda Pública</a></li>
                     <li class="nav-item"><a href="{{ route('admin.panel-principal') }}" class="btn btn-outline-light btn-sm me-2">Panel de Control</a></li>
                     <li class="nav-item"><a href="{{ route('admin.productos.index') }}" class="btn btn-outline-light btn-sm me-2">Ir a Productos</a></li>
+                    <li class="nav-item"><a href="{{ route('admin.ventas.index') }}" class="btn btn-outline-light btn-sm me-2">Ver Ventas</a></li>
                     <li class="nav-item"><a href="{{ route('admin.usuarios.index') }}" class="btn btn-outline-light btn-sm me-2">Ver Usuarios Registrados</a></li>
                     <li class="nav-item"><a href="{{ route('admin.consultas.index') }}" class="btn btn-outline-light btn-sm me-2">Bandeja de Mensajes</a></li>
                 
