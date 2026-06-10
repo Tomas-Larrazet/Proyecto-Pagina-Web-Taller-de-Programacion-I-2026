@@ -107,6 +107,9 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(f
     // Ver detalle de una venta
     Route::get('/admin/ventas/{id}', [App\Http\Controllers\AdminController::class, 'showVenta'])->name('admin.ventas.show');
 
+    // Actualizar estado de un pedido
+    Route::put('/admin/pedido/{pedido}/estado', [AdminController::class,'cambiarEstado'])->name('admin.pedidos.estado');
+
     // Bandeja de Consultas/Contacto
     Route::get('/admin/consultas', [App\Http\Controllers\AdminController::class, 'consultas'])->name('admin.consultas.index');
 
@@ -119,6 +122,7 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(f
 
     // Eliminar/Dar de baja a un usuario o admin
     Route::delete('/admin/usuarios/{id}', [App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.usuarios.destroy');
+
 
 
 });

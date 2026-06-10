@@ -34,8 +34,19 @@
                             <td>{{ $venta->user->email ?? 'Usuario dado de baja' }}</td>
                             <td class="fw-bold">${{ number_format($venta->total, 2, ',', '.') }}</td>
                             <td>
-                                <span class="badge bg-{{ $venta->estado == 'pendiente' ? 'warning' : ($venta->estado == 'completado' ? 'success' : 'secondary') }}">
-                                    {{ ucfirst($venta->estado ?? 'Completado') }}
+                                @php
+                                    $colorEstado = match($venta->estado) {
+                                        'cancelado' => 'danger',
+                                        'pagado' => 'warning',
+                                        'pendiente' => 'warning',
+                                        'enviado' => 'primary',
+                                        'entregado' => 'success',
+                                        default => 'secondary'
+                                    };
+                                @endphp
+
+                                <span class="badge bg-{{ $colorEstado }}">
+                                    {{ ucfirst($venta->estado ?? 'Pendiente') }}
                                 </span>
                             </td>
                             <td>

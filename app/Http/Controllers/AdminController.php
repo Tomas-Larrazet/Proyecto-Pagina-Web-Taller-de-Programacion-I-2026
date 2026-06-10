@@ -165,6 +165,20 @@ class AdminController extends Controller
         return view('admin.ventas.show', compact('pedido'));
     }
 
+    // Cambia el estado de un pedido
+    public function cambiarEstado(Request $request, $id){
+        $pedido = Pedido::findOrFail($id);
+
+        $request->validate([
+            'estado'=>'required|in:pendiente,pagado,enviado,entregado,cancelado'
+        ]);
+
+        $pedido->estado = $request->estado;
+        $pedido->save();
+
+        return redirect()->back()->with('success','Estado actualizado correctamente');
+    }
+
     // Muestra la bandeja de mensajes de contacto
     public function consultas()
     {
