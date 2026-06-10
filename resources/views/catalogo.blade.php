@@ -130,6 +130,7 @@
               <div class="card-body d-flex flex-column">
                 <p class="text-muted small mb-1">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</p>
                 <h5 class="card-title fw-bold text-dark mb-3">{{ $producto->nombre }}</h5>
+                <p class="text-muted small mb-1">{{ $producto->descripcion ?? 'Sin descripcion' }}</p>
                 <h4 class="text-success fw-bold mt-auto mb-3">${{ number_format($producto->precio, 2, ',', '.') }}</h4>
                 
                 @if(auth()->check() && auth()->user()->rol === 'admin')

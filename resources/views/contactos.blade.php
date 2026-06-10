@@ -95,7 +95,7 @@
               En Brightness.Store estamos para ayudarte en todo momento durante tu experiencia de compra. 
               Dejanos tu mensaje si tenés alguna duda sobre algún producto, métodos de pago, compras mayoristas, etc.
             </p>
-
+            
             <div class="card border-warning shadow"> 
                 <div class="card-body p-4">
                     
@@ -134,9 +134,15 @@
                         @error('mensaje') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                         
+                    @if(auth()->check() && auth()->user()->rol === 'admin')
+                  <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
+                    <i class="bi bi-shield-lock me-2"></i>Modo Admin
+                  </button>
+                  @else
                     <div class="d-grid">
                         <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">Enviar mensaje o consulta</button>
                     </div>
+                    @endif
                     </form>
                 </div>
             </div>

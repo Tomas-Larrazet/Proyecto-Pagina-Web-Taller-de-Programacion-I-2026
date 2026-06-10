@@ -33,7 +33,7 @@
                             <td>{{ $producto->id }}</td>
                             <td>
                                 @if($producto->url_imagen)
-                                    <img src="{{ asset('storage/' . $producto->url_imagen) }}" alt="Foto" width="50" class="img-thumbnail">
+                                    <img src="{{ asset( $producto->url_imagen) }}" alt="Foto" width="50" class="img-thumbnail">
                                 @else
                                     <span class="text-muted">Sin foto</span>
                                 @endif
