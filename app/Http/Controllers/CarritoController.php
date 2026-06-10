@@ -23,7 +23,7 @@ class CarritoController extends Controller
         }
 
         if ($producto->stock <= 0) {
-            return back()->with('error', 'Lamentablemente no hay stock de este producto.');
+            return redirect()->back()->with('error', 'Lamentablemente no hay stock de este producto.');
         }
 
         $itemCarrito = Carrito::where('user_id', Auth::id())
@@ -209,6 +209,7 @@ class CarritoController extends Controller
         return back()->with('error', 'El código ingresado no es válido.');
     }
 
+    
     //Redireccion a pagina exitosa
     public function compraExitosa($id)
     {
@@ -219,3 +220,6 @@ class CarritoController extends Controller
     }
 
 }
+
+
+

@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/compra-exitosa/{id}', [CarritoController::class, 'compraExitosa'])->name('compra.exitosa');
     Route::get('/mis-compras/factura/{id}', [App\Http\Controllers\PedidoController::class, 'descargarFactura'])->name('pedidos.factura');
+
 });
 
 

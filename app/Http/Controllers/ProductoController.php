@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Categoria;
+use App\Models\Carrito;
 
 class ProductoController extends Controller
 {
@@ -60,7 +61,12 @@ class ProductoController extends Controller
         // 8. Buscamos TODAS las categorías para el Dropdown lateral
         $categoriasDropdown = Categoria::all();
 
+        //9. Traemos el carrito del usuario logueado
+        $carrito = auth()->check() 
+            ? \App\Models\Carrito::where('user_id', auth()->id())->pluck('cantidad', 'producto_id')
+            : collect();
+
         // 9. Mandamos ambos datos a la vista 'catalogo'
-        return view('catalogo', compact('productos', 'categoriasDropdown'));
+        return view('catalogo', compact('productos', 'categoriasDropdown', 'carrito'));
     }
 }
