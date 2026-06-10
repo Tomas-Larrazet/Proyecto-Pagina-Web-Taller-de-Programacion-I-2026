@@ -15,7 +15,7 @@ class AdminController extends Controller
     // Muestra el panel principal
     public function index()
     {
-        return view('admin.panel'); 
+        return view('admin.panel-principal'); 
     }
 
     // Muestra la tabla con todos los productos
@@ -64,7 +64,7 @@ class AdminController extends Controller
             'activo' => 1 
         ]);
 
-        return redirect()->route('admin.panel')->with('success', '¡Producto cargado con éxito!');
+        return redirect()->route('admin.panel-principal')->with('success', '¡Producto cargado con éxito!');
     }
    
     // Elimina un producto (Baja lógica)

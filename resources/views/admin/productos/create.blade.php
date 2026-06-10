@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargar Producto - Brightness.Store</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@extends('admin.panel') 
+
+@section('titulo', 'Cargar Producto - Brightness.Store')
+
+@section('contenido')
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -67,7 +63,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.panel') }}" class="btn btn-secondary">Cancelar</a>
+                            <a href="{{ route('admin.panel-principal') }}" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-primary">Guardar Producto</button>
                         </div>
                     </form>
@@ -78,5 +74,4 @@
     </div>
 </div>
 
-</body>
-</html>
+@endsection

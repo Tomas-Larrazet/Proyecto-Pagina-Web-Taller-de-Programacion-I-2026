@@ -74,13 +74,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/mis-compras/factura/{id}', [App\Http\Controllers\PedidoController::class, 'descargarFactura'])->name('pedidos.factura');
 });
 
-Route::get('/admin/panel', [AdminController::class, 'index'])->middleware('auth')->name('admin.panel');
 
 // Rutas exclusivas para el ADMINISTRADOR
 Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(function () {
     
     // Panel principal
-    Route::get('/admin/panel', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.panel');
+    Route::get('/admin/panel-principal', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.panel-principal');
 
     // Rutas para el CRUD de Productos
 

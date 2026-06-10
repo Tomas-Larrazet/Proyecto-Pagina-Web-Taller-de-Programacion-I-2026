@@ -60,7 +60,7 @@ class AuthController extends Controller
             // 3.Verificamos quién acaba de entrar
             if (Auth::user()->rol === 'admin') {
                 // Si es el Administrador, va a su panel exclusivo
-                return redirect()->intended('/admin/panel'); 
+                return redirect()->intended('/admin/panel-principal'); 
             }
 
             // Si es un cliente normal, lo mandamos al catálogo

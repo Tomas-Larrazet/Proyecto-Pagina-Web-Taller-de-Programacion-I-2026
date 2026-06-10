@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios Registrados - Brightness.Store</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@extends('admin.panel') 
+
+@section('titulo', 'Usuarios registrados - Brightness.Store')
+
+@section('contenido')
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Usuarios</h2>
         <div>
-            <a href="{{ route('admin.panel') }}" class="btn btn-secondary">Volver al Panel</a>
+            <a href="{{ route('admin.panel-principal') }}" class="btn btn-secondary">Volver al Panel</a>
             <a href="{{ route('admin.usuarios.create_admin') }}" class="btn btn-success">+ Nuevo Admin</a>
         </div>
     </div>
@@ -74,5 +70,4 @@
     </div>
 </div>
 
-</body>
-</html>
+@endsection
