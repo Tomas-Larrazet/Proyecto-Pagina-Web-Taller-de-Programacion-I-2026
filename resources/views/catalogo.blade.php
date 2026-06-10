@@ -122,44 +122,65 @@
             </div>
           </form> </div>
       </div> <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @forelse($productos as $producto)
-          <div class="col">
-            <div class="card h-100 border-0 shadow-sm">
-              <img src="{{ asset($producto->url_imagen ?? 'images/default.jpg') }}" class="card-img-top" alt="{{ $producto->nombre }}" style="height: 250px; object-fit: cover;">
-              
-              <div class="card-body d-flex flex-column">
-                <p class="text-muted small mb-1">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</p>
-                <h5 class="card-title fw-bold text-dark mb-3">{{ $producto->nombre }}</h5>
-                <p class="text-muted small mb-1">{{ $producto->descripcion ?? 'Sin descripcion' }}</p>
-                <h4 class="text-success fw-bold mt-auto mb-3">${{ number_format($producto->precio, 2, ',', '.') }}</h4>
-                
-                @if(auth()->check() && auth()->user()->rol === 'admin')
-                  <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
-                    <i class="bi bi-shield-lock me-2"></i>Modo Admin
-                  </button>
-                  
-                  @elseif($producto->stock > 0)
-                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto">
-                      @csrf
-                      <button type="submit" class="btn btn-warning w-100 fw-bold shadow-sm" style="background-color: rgb(248, 233, 69);">
-                        <i class="bi bi-cart-plus me-2"></i>Agregar
-                      </button>
-                    </form>
-                    
-                  @else
-                    <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
-                      Sin Stock
-                    </button>
-                @endif
-              </div>
+      {{-- Mensaje de error de stock --}}
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-          </div>
+        @endif 
+      @forelse($productos as $producto)
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="{{ asset($producto->url_imagen ?? 'images/default.jpg') }}" class="card-img-top" alt="{{ $producto->nombre }}" style="height: 250px; object-fit: cover;">
+                    
+                    <div class="card-body d-flex flex-column">
+                        <p class="text-muted small mb-1">{{ $producto->categoria->nombre ?? 'Sin categoría' }}</p>
+                        <h5 class="card-title fw-bold text-dark mb-3">{{ $producto->nombre }}</h5>
+                        <p class="text-muted small mb-1">{{ $producto->descripcion ?? 'Sin descripcion' }}</p>
+                        <h4 class="text-success fw-bold mt-auto mb-3">${{ number_format($producto->precio, 2, ',', '.') }}</h4>
+                        
+                        @if(auth()->check() && auth()->user()->rol === 'admin')
+                            <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
+                                <i class="bi bi-shield-lock me-2"></i>Modo Admin
+                            </button>
+
+                        @elseif($producto->stock > 0)
+                            @php
+                                $cantidadEnCarrito = $carrito[$producto->id] ?? 0;
+                            @endphp
+
+                            @if($cantidadEnCarrito >= $producto->stock)
+                                <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
+                                    <i class="bi bi-x-circle me-2"></i>Sin Stock
+                                </button>
+                            @else
+                                <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto form-agregar-carrito">
+                                    @csrf
+                                    <button type="button" class="btn btn-warning w-100 fw-bold shadow-sm btn-agregar" style="background-color: rgb(248, 233, 69);">
+                                        <i class="bi bi-cart-plus me-2"></i>Agregar
+                                    </button>
+                                </form>
+                            @endif
+
+                        @else
+                            {{-- Stock = 0 --}}
+                            <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
+                                <i class="bi bi-x-circle me-2"></i>Sin Stock
+                            </button>
+
+                        @endif {{-- ← cerramos el @if principal --}}
+
+                    </div>
+                </div>
+            </div>
+
         @empty
-          <div class="col-12 text-center py-5">
-            <i class="bi bi-search text-muted mb-3" style="font-size: 3rem;"></i>
-            <h4 class="text-muted fw-bold">No se encontraron productos</h4>
-            <p class="text-muted">Intentá ajustando los filtros de búsqueda.</p>
-          </div>
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-search text-muted mb-3" style="font-size: 3rem;"></i>
+                <h4 class="text-muted fw-bold">No se encontraron productos</h4>
+                <p class="text-muted">Intentá ajustando los filtros de búsqueda.</p>
+            </div>
         @endforelse
       </div> </div> </div> </div> @auth
     @php
@@ -175,6 +196,19 @@
         </a>
     @endif
 @endauth
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-agregar').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const form = btn.closest('.form-agregar-carrito');
 
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...';
+
+            form.submit();
+        });
+    });
+});
+</script>
 @endsection
 
