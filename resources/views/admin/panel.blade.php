@@ -12,7 +12,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm w-100">
         <div class="container justify-content-center">
 
-            <button class="navbar-toggler mb-2 border-0 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion" aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir menú">
+            <button class="navbar-toggler mb-2 border-0 shadow-sm bg-warning" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion" aria-controls="menuNavegacion" aria-expanded="false" aria-label="Abrir menú">
                 <span class="navbar-toggler-icon"></span>
             </button>
 

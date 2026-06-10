@@ -8,14 +8,42 @@ use App\Models\Categoria;
 use App\Models\Pedido;
 use App\Models\Consulta;
 use App\Models\User;
+use App\Models\DetallePedido;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
     // Muestra el panel principal
-    public function index()
-    {
-        return view('admin.panel-principal'); 
+    public function index(){
+        $totalUsuarios = User::count();
+
+        $totalProductos = Producto::count();
+
+        $totalVentas = Pedido::count();
+
+        $ingresos = Pedido::sum('total');
+
+        $productosStockBajo = Producto::where('stock','<=',5)
+        ->get();
+
+        $topProductos = DetallePedido::select(
+        'producto_id',
+        \DB::raw('SUM(cantidad) as total_vendido')
+        )
+        ->groupBy('producto_id')
+        ->orderByDesc('total_vendido')
+        ->with('producto')
+        ->limit(5)
+        ->get();
+
+        return view('admin.panel-principal', compact(
+            'totalUsuarios',
+            'totalProductos',
+            'totalVentas',
+            'ingresos',
+            'productosStockBajo',
+            'topProductos'
+        ));
     }
 
     // Muestra la tabla con todos los productos
