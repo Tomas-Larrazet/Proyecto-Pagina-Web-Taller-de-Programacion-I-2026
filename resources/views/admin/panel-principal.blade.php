@@ -12,7 +12,7 @@
             
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-primary">
+                    <div class="card shadow-sm border-primary h-100">
                         <div class="card-body text-center">
                             <h5 class="card-title text-primary">Gestión de Productos</h5>
                             <p class="card-text">Alta, baja y modificación de joyas.</p>
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-success">
+                    <div class="card shadow-sm border-success h-100">
                         <div class="card-body text-center">
                             <h5 class="card-title text-success">Ventas Realizadas</h5>
                             <p class="card-text">Revisá el historial de compras.</p>
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-warning">
+                    <div class="card shadow-sm border-warning h-100">
                         <div class="card-body text-center">
                             <h5 class="card-title text-warning">Usuarios y Consultas</h5>
                             <p class="card-text">Administrá clientes y mensajes.</p>

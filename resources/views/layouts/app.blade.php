@@ -37,7 +37,9 @@
 
             <div class="collapse navbar-collapse justify-content-center w-100" id="menuNavegacion">
                 <ul class="navbar-nav align-items-center text-center gap-3 gap-lg-4 m-0">
-                    
+                    @if(auth()->check() && auth()->user()->rol === 'admin')
+                        <li class="nav-item"><a class="nav-link {{ request()->is('admin*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="{{ route('admin.panel-principal') }}">Panel de Control</a></li>
+                    @endif
                     <li class="nav-item"><a class="nav-link {{ request()->is('catalogo*') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/catalogo">Catálogo</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->is('contactos') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/contactos">Contactos</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->is('comercializacion') ? 'active fw-bold border-bottom border-warning border-2' : '' }}" href="/comercializacion">Comercialización</a></li>
