@@ -13,6 +13,7 @@
             
             <h1 class="fw-bold text-dark mb-2">¡Gracias por tu compra!</h1>
             <p class="text-muted fs-5 mb-5">Tu pedido ha sido procesado con éxito. Ya estamos preparando tus accesorios.</p>
+            <p class="text-muted fs-5 mb-5">Nos comunicaremos a tu correo para enviarte informacion sobre el envio ;)</p>
             
             <div class="card border-0 shadow-sm rounded-4 bg-white text-start mb-4 p-4">
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">

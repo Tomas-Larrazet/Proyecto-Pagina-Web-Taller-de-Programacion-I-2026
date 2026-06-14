@@ -141,35 +141,40 @@
                         <h4 class="text-success fw-bold mt-auto mb-3">${{ number_format($producto->precio, 2, ',', '.') }}</h4>
                         
                         @if(auth()->check() && auth()->user()->rol === 'admin')
-                            <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
-                                <i class="bi bi-shield-lock me-2"></i>Modo Admin
-                            </button>
+                          <button class="btn btn-secondary w-100 fw-bold mt-auto border-0" disabled style="background-color: #e9ecef; color: #6c757d;">
+                              <i class="bi bi-shield-lock me-2"></i>Modo Admin
+                          </button>
 
-                        @elseif($producto->stock > 0)
-                            @php
-                                $cantidadEnCarrito = $carrito[$producto->id] ?? 0;
-                            @endphp
+                      @elseif(!auth()->check())
+                          {{-- Usuario visitante --}}
+                          <button type="button" class="btn btn-warning w-100 fw-bold shadow-sm" style="background-color: rgb(248, 233, 69);" onclick="mostrarAlertaLogin()">
+                              <i class="bi bi-cart-plus me-2"></i>Agregar
+                          </button>
 
-                            @if($cantidadEnCarrito >= $producto->stock)
-                                <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
-                                    <i class="bi bi-x-circle me-2"></i>Sin Stock
-                                </button>
-                            @else
-                                <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto form-agregar-carrito">
-                                    @csrf
-                                    <button type="button" class="btn btn-warning w-100 fw-bold shadow-sm btn-agregar" style="background-color: rgb(248, 233, 69);">
-                                        <i class="bi bi-cart-plus me-2"></i>Agregar
-                                    </button>
-                                </form>
-                            @endif
+                      @elseif($producto->stock > 0)
+                          @php
+                              $cantidadEnCarrito = $carrito[$producto->id] ?? 0;
+                          @endphp
 
-                        @else
-                            {{-- Stock = 0 --}}
-                            <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
-                                <i class="bi bi-x-circle me-2"></i>Sin Stock
-                            </button>
+                          @if($cantidadEnCarrito >= $producto->stock)
+                              <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
+                                  <i class="bi bi-x-circle me-2"></i>Sin Stock
+                              </button>
+                          @else
+                              <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-auto form-agregar-carrito">
+                                  @csrf
+                                  <button type="button" class="btn btn-warning w-100 fw-bold shadow-sm btn-agregar" style="background-color: rgb(248, 233, 69);">
+                                      <i class="bi bi-cart-plus me-2"></i>Agregar
+                                  </button>
+                              </form>
+                          @endif
 
-                        @endif {{-- ← cerramos el @if principal --}}
+                      @else
+                          <button class="btn btn-secondary w-100 fw-bold mt-auto" disabled>
+                              <i class="bi bi-x-circle me-2"></i>Sin Stock
+                          </button>
+
+                      @endif
 
                     </div>
                 </div>
@@ -196,19 +201,50 @@
         </a>
     @endif
 @endauth
+
+{{-- Modal para usuarios visitantes--}}
+<div id="modalLogin" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:2rem; max-width:400px; width:90%; text-align:center;">
+        <i class="bi bi-person-lock" style="font-size:3rem; color:rgb(248, 233, 69);"></i>
+        <h5 class="fw-bold mt-3">¡Iniciá sesión para comprar!</h5>
+        <p class="text-muted">Para agregar productos al carrito necesitás tener una cuenta.</p>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+            <a href="{{ route('login') }}" class="btn btn-warning fw-bold px-4" style="background-color:rgb(248, 233, 69);">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+            </a>
+            <a href="{{ route('register') }}" class="btn btn-outline-secondary fw-bold px-4">
+                <i class="bi bi-person-plus me-2"></i>Registrarse
+            </a>
+        </div>
+        <button onclick="cerrarModal()" class="btn btn-link text-muted mt-2">Cerrar</button>
+    </div>
+</div>
+
 <script>
+function mostrarAlertaLogin() {
+    document.getElementById('modalLogin').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modalLogin').style.display = 'none';
+}
+
+{{-- Cerrar tocando fuera del modal --}}
+document.getElementById('modalLogin').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.btn-agregar').forEach(function (btn) {
         btn.addEventListener('click', function () {
             const form = btn.closest('.form-agregar-carrito');
-
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...';
-
             form.submit();
         });
     });
 });
 </script>
+
 @endsection
 
