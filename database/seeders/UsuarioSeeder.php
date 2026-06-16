@@ -18,7 +18,7 @@ class UsuarioSeeder extends Seeder
             [
                 'name' => 'Admi Nistrador',
                 'email' => 'administrador@gmail.com',
-                'password' => Hash::make('admin123'), // Encriptar la contraseña
+                'password' => Hash::make('admin123'),
                 'rol' => 'admin',
                 'telefono' => '1234567890',
                 'direccion' => 'Calle Principal 123',

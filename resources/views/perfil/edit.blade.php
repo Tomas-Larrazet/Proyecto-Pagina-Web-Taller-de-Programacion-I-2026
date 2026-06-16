@@ -9,7 +9,6 @@
             
             <h2 class="fw-bold text-dark mb-4"><i class="bi bi-person-gear text-warning me-2"></i> Editar Perfil</h2>
 
-            <!-- Alerta de Éxito -->
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
@@ -24,7 +23,6 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- SECCIÓN 1: DATOS PERSONALES -->
                         <h5 class="fw-bold text-dark border-bottom pb-2 mb-4">Datos de Contacto</h5>
                         
                         <div class="mb-3">
@@ -40,11 +38,9 @@
                             @enderror
                         </div>
 
-                        <!-- SECCIÓN 2: SEGURIDAD -->
-                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-4 mt-5">Seguridad (Opcional)</h5>
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-4 mt-5">Seguridad</h5>
                         <p class="text-muted small mb-4">Deja estos campos en blanco si no deseas cambiar tu contraseña actual.</p>
 
-                        <!-- Contraseña Actual -->
                         <div class="mb-3">
                             <label for="password_actual" class="form-label fw-semibold">Contraseña Actual</label>
                             <input type="password" class="form-control @error('password_actual') is-invalid @enderror" id="password_actual" name="password_actual" placeholder="Ingresa tu contraseña actual">
@@ -53,7 +49,6 @@
                             @enderror
                         </div>
 
-                        <!-- Nueva Contraseña -->
                         <div class="mb-3">
                             <label for="password_nueva" class="form-label fw-semibold">Nueva Contraseña</label>
                             <input type="password" class="form-control @error('password_nueva') is-invalid @enderror" id="password_nueva" name="password_nueva" placeholder="Mínimo 8 caracteres">
@@ -62,13 +57,11 @@
                             @enderror
                         </div>
 
-                        <!-- Confirmar Nueva Contraseña -->
                         <div class="mb-4">
                             <label for="password_nueva_confirmation" class="form-label fw-semibold">Confirmar Nueva Contraseña</label>
                             <input type="password" class="form-control" id="password_nueva_confirmation" name="password_nueva_confirmation" placeholder="Repite la nueva contraseña">
                         </div>
 
-                        <!-- BOTÓN DE GUARDAR -->
                         <div class="d-grid mt-5">
                             <button type="submit" class="btn btn-warning fw-bold py-2 shadow-sm text-uppercase">
                                 Guardar Cambios

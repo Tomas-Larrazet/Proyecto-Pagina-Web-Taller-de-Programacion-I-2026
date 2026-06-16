@@ -15,13 +15,11 @@ class Carrito extends Model
         'cantidad'
     ];
 
-    // Un registro del carrito pertenece a un producto
     public function producto()
     {
         return $this->belongsTo(Producto::class);
     }
 
-    // Un registro del carrito pertenece a un usuario
     public function user()
     {
         return $this->belongsTo(User::class);

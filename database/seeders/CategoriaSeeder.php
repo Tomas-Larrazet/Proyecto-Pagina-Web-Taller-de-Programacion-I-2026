@@ -41,7 +41,6 @@ class CategoriaSeeder extends Seeder
 
         ];
 
-        // Usamos un bucle para guardar cada categoria en la BD
         foreach ($categorias as $categoria) {
             Categoria::create($categoria);
         }

@@ -8,15 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ConsultaController extends Controller
 {
-    // Este es el método que la guía te pide crear
     public function guardarConsulta(Request $request) 
     { 
         $reglas = [
             'mensaje' => 'required|string|min:10|max:1000',
         ];
 
-        // Validación Dinámica
-        if (!Auth::check()) { // Auth::check() devuelve true si está logueado, false si es visitante
+        if (!Auth::check()) {
             $reglas['nombre'] = 'required|string|max:100';
             $reglas['email'] = 'required|email|max:100';
         }
@@ -27,12 +25,10 @@ class ConsultaController extends Controller
             $nombreFinal = Auth::user()->name;
             $emailFinal = Auth::user()->email;
         } else {
-            // Si es visitante, sacamos los datos de lo que escribió en el formulario
             $nombreFinal = $request->nombre;
             $emailFinal = $request->email;
         }
         
-        // Guardar en la base de datos
         Consulta::create([
             'user_id' => Auth::check() ? Auth::id() : null,
             'nombre' => $nombreFinal,
@@ -40,8 +36,6 @@ class ConsultaController extends Controller
             'mensaje' => $request->mensaje,
         ]);
         
-
-        // Retornamos la vista de éxito pasando un arreglo con los datos
         return view('exito', [ 
             'nombre' => $nombreFinal, 
             'email' => $emailFinal, 

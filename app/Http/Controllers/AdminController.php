@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    // Muestra el panel principal
     public function index(){
         $totalUsuarios = User::count();
 
@@ -46,23 +45,18 @@ class AdminController extends Controller
         ));
     }
 
-    // Muestra la tabla con todos los productos
     public function productos()
     {
-        // Traemos todos los productos de la base de datos
         $productos = Producto::all();
         return view('admin.productos.index', compact('productos'));
     }
 
-    // Muestra el formulario para crear un producto
     public function create()
     {
-        // Traemos las categorías para armar el menú desplegable
         $categorias = Categoria::all(); 
         return view('admin.productos.create', compact('categorias'));
     }
 
-    // Guarda el producto en la base de datos
     public function store(Request $request)
     {
         
@@ -81,7 +75,6 @@ class AdminController extends Controller
             $rutaImagen = $request->file('imagen')->store('productos', 'public');
         }
 
-        // 2. Creamos el producto
         Producto::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
@@ -95,7 +88,6 @@ class AdminController extends Controller
         return redirect()->route('admin.panel-principal')->with('success', '¡Producto cargado con éxito!');
     }
    
-    // Elimina un producto (Baja lógica)
     public function destroy($id)
     {
         $producto = Producto::findOrFail($id);
@@ -105,19 +97,16 @@ class AdminController extends Controller
         return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado del catálogo (Baja lógica).');
     }
 
-    // Muestra el formulario con los datos actuales del producto
     public function edit($id)
     {
         $producto = Producto::findOrFail($id);
-        $categorias = Categoria::all(); // Necesitamos las categorías para el menú desplegable
+        $categorias = Categoria::all();
         
         return view('admin.productos.edit', compact('producto', 'categorias'));
     }
 
-    // Sobreescribe los datos en la base de datos
     public function update(Request $request, $id)
     {
-        // 1. Validamos los datos nuevos
         $request->validate([
             'nombre' => 'required|string|max:150',
             'descripcion' => 'nullable|string',
@@ -129,14 +118,12 @@ class AdminController extends Controller
 
         $producto = Producto::findOrFail($id);
 
-        // 2. Actualizamos los datos de texto
         $producto->nombre = $request->nombre;
         $producto->descripcion = $request->descripcion;
         $producto->precio = $request->precio;
         $producto->stock = $request->stock;
         $producto->categoria_id = $request->categoria_id;
 
-        // 3. Reemplazar foto nueva del usuario
         if ($request->hasFile('imagen')) {
             $producto->url_imagen = $request->file('imagen')->store('productos', 'public');
         }
@@ -146,26 +133,20 @@ class AdminController extends Controller
         return redirect()->route('admin.productos.index')->with('success', '¡Producto actualizado correctamente!');
     }
 
-    //Muestra el historial completo de ventas
     public function ventas()
     {
-        //Traemos todos los pedidos ordenados por fecha 
         $ventas = Pedido::orderBy('created_at', 'desc')->get();
 
         return  view('admin.ventas.index', compact('ventas'));
     }
 
-    // Muestra el detalle de un pedido específico
     public function showVenta($id)
     {
-        // Buscamos el pedido. 
-        // Nota: Asumimos que tu compañero armó la relación con los productos o detalles.
         $pedido = Pedido::findOrFail($id);
         
         return view('admin.ventas.show', compact('pedido'));
     }
 
-    // Cambia el estado de un pedido
     public function cambiarEstado(Request $request, $id){
         $pedido = Pedido::findOrFail($id);
 
@@ -179,38 +160,31 @@ class AdminController extends Controller
         return redirect()->back()->with('success','Estado actualizado correctamente');
     }
 
-    // Muestra la bandeja de mensajes de contacto
     public function consultas()
     {
         $consultas = Consulta::orderBy('created_at', 'desc')->get();
         return view('admin.consultas.index', compact('consultas'));
     }
 
-    // Muestra la lista de clientes registrados
     public function usuarios()
     {
-        // Traemos a todos los usuarios
         $usuarios = User::orderBy('created_at', 'desc')->get();
         return view('admin.usuarios.index', compact('usuarios'));
     }
 
-    // Muestra el formulario para crear un admin
     public function createAdmin()
     {
         return view('admin.usuarios.crear_admin');
     }
 
-    // Guarda al nuevo administrador en la base de datos
     public function storeAdmin(Request $request)
     {
-        // 1. Validamos los datos 
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', 
         ]);
 
-        // 2. Creamos el usuario
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -221,32 +195,26 @@ class AdminController extends Controller
         return redirect()->route('admin.usuarios.index')->with('success', '¡Nuevo Administrador creado con éxito!');
     }
 
-    // Da de baja a un usuario o administrador
     public function destroyUser($id)
     {
         $usuario = User::findOrFail($id);
 
-        //Evitamos que el administrador logueado se borre a sí mismo
         if ($usuario->id === auth()->id()) {
             return back()->with('error', 'Por seguridad, no podés dar de baja tu propia cuenta.');
         }
 
-        // Eliminamos al usuario 
         $usuario->delete();
 
         return back()->with('success', 'El usuario ha sido dado de baja correctamente.');
     }
 
-    // Muestra el formulario para crear una categoría
     public function createCategoria()
     {
         return view('admin.categorias.create');
     }
 
-    // Nueva categoria
     public function storeCategoria(Request $request)
     {
-        // Validamos que no envíen el campo vacío
         $request->validate([
             'nombre' => 'required|string|max:255|unique:categorias,nombre',
         ], [
@@ -254,12 +222,10 @@ class AdminController extends Controller
             'nombre.unique' => 'Ya existe una categoría con este nombre.'
         ]);
 
-        // Creamos la categoría
         Categoria::create([
             'nombre' => $request->nombre,
         ]);
 
-        // Redirigimos de vuelta al panel de productos 
         return redirect()->route('admin.productos.index')->with('success', '¡Nueva categoría creada con éxito!');
     }
 }

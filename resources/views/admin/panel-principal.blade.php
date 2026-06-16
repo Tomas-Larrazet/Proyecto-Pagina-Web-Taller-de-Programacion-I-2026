@@ -57,7 +57,6 @@
 
 
             <div class="row">
-                <!-- Ventas -->
                 <div class="col-md-3 mb-4">
                     <div class="card shadow-sm border-success h-100">
                         <div class="card-body text-center">
@@ -76,7 +75,6 @@
                     </div>
                 </div>
 
-                <!-- Usuarios -->
                 <div class="col-md-3 mb-4">
                     <div class="card shadow-sm border-primary h-100">
                         <div class="card-body text-center">
@@ -93,7 +91,6 @@
                     </div>
                 </div>
 
-                <!-- Productos -->
                 <div class="col-md-3 mb-4">
                     <div class="card shadow-sm border-warning h-100">
                         <div class="card-body text-center">
@@ -110,7 +107,6 @@
                     </div>
                 </div>
 
-                <!-- Ingresos -->
                 <div class="col-md-3 mb-4">
                     <div class="card shadow-sm border-danger h-100">
                         <div class="card-body text-center">
@@ -130,9 +126,7 @@
                 </div>
             </div>
 
-            <!-- Segunda fila -->
             <div class="row">
-                <!-- Producto más vendido -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-dark text-white">
@@ -163,7 +157,6 @@
                     </div>
                 </div>
 
-                <!-- Stock bajo -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-danger text-white">

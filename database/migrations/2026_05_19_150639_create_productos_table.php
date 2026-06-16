@@ -18,10 +18,10 @@ return new class extends Migration
             $table->decimal('precio', 10, 2);
             $table->integer('stock')->default(0);
             $table->string('url_imagen')->nullable();
-            $table->boolean('activo')->default(true); // Control de pausa comercial
+            $table->boolean('activo')->default(true);
             $table->foreignId('categoria_id')->constrained('categorias')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes(); // Papelera / Borrado lógico
+            $table->softDeletes();
         });
     }
 

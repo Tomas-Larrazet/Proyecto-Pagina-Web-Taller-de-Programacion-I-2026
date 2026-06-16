@@ -112,7 +112,6 @@
                         <h4 class="fw-bold">Pannunzio Nicolas</h4>
                         <p class="mb-2" style="color: rgb(241, 232, 42); font-weight: 500;">Desarrollador y diseñador Web</p>
 
-                        <!-- Redes sociales -->
                         <div class="d-flex justify-content-center gap-3 mt-3">
                             <a href="https://github.com/mNicolasPannunzio" target="_blank" rel="noopener noreferrer" class="social-icon">
                                 <i class="bi bi-github"></i>
@@ -134,7 +133,6 @@
                         <h4 class="fw-bold">Larrazet Tomas</h4>
                         <p class="mb-2" style="color: rgb(241, 232, 42); font-weight: 500;">Desarrollador y diseñador Web</p>
 
-                        <!-- Redes sociales -->
                         <div class="d-flex justify-content-center gap-3 mt-3">
                             <a href="https://github.com/Tomas-Larrazet" target="_blank" rel="noopener noreferrer" class="social-icon">
                                 <i class="bi bi-github"></i>
