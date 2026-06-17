@@ -13,16 +13,9 @@ return new class extends Migration
     {
         Schema::create('carritos', function (Blueprint $table) {
             $table->id();
-            
-            // Relación con el usuario (quién es el dueño de este producto en el carrito)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            
-            // Relación con el producto (qué producto agregó)
             $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
-            
-            // La cantidad de unidades que quiere llevar
             $table->integer('cantidad')->default(1);
-            
             $table->timestamps();
         });
     }

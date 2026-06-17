@@ -19,10 +19,8 @@ class AuthController extends Controller
         return view('auth.logIn');
     }
 
-    // Procesa el formulario de registro
     public function register(Request $request)
     {
-        // 1. VALIDACIÓN
         $request->validate([
             'name' => 'required|string|max:255|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/',
             'email' => 'required|string|email|max:255|unique:users',
@@ -31,47 +29,36 @@ class AuthController extends Controller
             'direccion' => 'nullable|string|max:255',
         ]);
 
-        // 2. CREACIÓN DEL USUARIO
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Encriptación obligatoria
+            'password' => Hash::make($request->password),
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
         ]);
 
-        // 3. LOGUEAR AUTOMÁTICAMENTE Y REDIRIGIR
         Auth::login($user);
         return redirect()->route('catalogo.index')->with('success', '¡Te registraste correctamente!');
     }
 
-    // Procesa el formulario de login
     public function login(Request $request){
-        // 1. VALIDACION DE DATOS
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        // 2. Intentar iniciar sesión
         if (Auth::attempt($credentials, $request->has('remember'))){
-            $request->session()->regenerate(); // Previene ataques de sesión
+            $request->session()->regenerate();
 
-            // 3.Verificamos quién acaba de entrar
             if (Auth::user()->rol === 'admin') {
-                // Si es el Administrador, va a su panel exclusivo
                 return redirect()->intended('/admin/panel-principal'); 
             }
-
-            // Si es un cliente normal, lo mandamos al catálogo
             return redirect()->intended(route('catalogo.index'));
         }
 
-        // 4. Si falla, vuelve atras con el error
         return back()->with('error', 'No encontramos ninguna cuenta con esos datos, revisa los datos ingresados o registrate.');
     }
 
-    // Cierra la sesion
     public function logout(Request $request){
         Auth::logout();
         $request->session()->invalidate();

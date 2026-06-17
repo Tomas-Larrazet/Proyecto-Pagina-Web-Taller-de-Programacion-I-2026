@@ -37,30 +37,24 @@ Route::get('/contactos', function () {
 
 Route::post('/contactos', [ConsultaController::class, 'guardarConsulta']);
 
-// Rutas para USUARIOS VISITANTES (solo acceden si NO estan logueados)
 Route::middleware('guest')->group(function () {
-    // Registro de usuario
     Route::get('/registroUsuario', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/registroUsuario', [AuthController::class, 'register']);
 
-    // Login
     Route::get('/logIn', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/logIn', [AuthController::class, 'login']);
 });
 
-// Rutas para USUARIOS LOGUEADOS
 
 Route::post('/logOut', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('/mis-compras', [PedidoController::class, 'index'])->middleware('auth')->name('mis-compras');
 
 Route::middleware('auth')->group(function () {
-    // Rutas para editar perfil
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil/actualizar', [PerfilController::class, 'update'])->name('perfil.update');
 });
 
-// Rutas para el carrito de compras (solo accesibles para usuarios autenticados)
 Route::middleware('auth')->group(function () {
     Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
     Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
@@ -76,52 +70,36 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// Rutas exclusivas para el ADMINISTRADOR
 Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(function () {
     
-    // Panel principal
     Route::get('/admin/panel-principal', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.panel-principal');
 
-    // Rutas para el CRUD de Productos
-
-    // Listado de productos
     Route::get('/admin/productos', [App\Http\Controllers\AdminController::class, 'productos'])->name('admin.productos.index');
 
-    // Borrar producto (Baja lógica)
     Route::delete('/admin/productos/{id}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.productos.destroy');
 
-    //Crear productos
     Route::get('/admin/productos/crear', [App\Http\Controllers\AdminController::class, 'create'])->name('admin.productos.create');
     Route::post('/admin/productos', [App\Http\Controllers\AdminController::class, 'store'])->name('admin.productos.store');
 
-    // Gestión de Categorías
     Route::get('/admin/categorias/crear', [App\Http\Controllers\AdminController::class, 'createCategoria'])->name('admin.categorias.create');
     Route::post('/admin/categorias', [App\Http\Controllers\AdminController::class, 'storeCategoria'])->name('admin.categorias.store');
 
-    // Editar producto
     Route::get('/admin/productos/{id}/editar', [App\Http\Controllers\AdminController::class, 'edit'])->name('admin.productos.edit');
     Route::put('/admin/productos/{id}', [App\Http\Controllers\AdminController::class, 'update'])->name('admin.productos.update');
 
-    // Historial de Ventas
     Route::get('/admin/ventas', [App\Http\Controllers\AdminController::class, 'ventas'])->name('admin.ventas.index');
 
-    // Ver detalle de una venta
     Route::get('/admin/ventas/{id}', [App\Http\Controllers\AdminController::class, 'showVenta'])->name('admin.ventas.show');
 
-    // Actualizar estado de un pedido
     Route::put('/admin/pedido/{pedido}/estado', [AdminController::class,'cambiarEstado'])->name('admin.pedidos.estado');
 
-    // Bandeja de Consultas/Contacto
     Route::get('/admin/consultas', [App\Http\Controllers\AdminController::class, 'consultas'])->name('admin.consultas.index');
 
-    // Listado de Usuarios Registrados
     Route::get('/admin/usuarios', [App\Http\Controllers\AdminController::class, 'usuarios'])->name('admin.usuarios.index');
 
-    // Crear nuevos Administradores
     Route::get('/admin/usuarios/crear-admin', [App\Http\Controllers\AdminController::class, 'createAdmin'])->name('admin.usuarios.create_admin');
     Route::post('/admin/usuarios/crear-admin', [App\Http\Controllers\AdminController::class, 'storeAdmin'])->name('admin.usuarios.store_admin');
 
-    // Eliminar/Dar de baja a un usuario o admin
     Route::delete('/admin/usuarios/{id}', [App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.usuarios.destroy');
 
 

@@ -20,11 +20,40 @@
 
                 <ul class="navbar-nav align-items-center text-center gap-3 gap-lg-4 m-0">
                     <li class="nav-item"><a class="navbar-brand text-light" href="{{ url('/') }}" target="_blank">💎 Brightness.Store | Ver Tienda Pública</a></li>
-                    <li class="nav-item"><a href="{{ route('admin.panel-principal') }}" class="btn btn-outline-light btn-sm me-2">Panel de Control</a></li>
-                    <li class="nav-item"><a href="{{ route('admin.productos.index') }}" class="btn btn-outline-light btn-sm me-2">Ir a Productos</a></li>
-                    <li class="nav-item"><a href="{{ route('admin.ventas.index') }}" class="btn btn-outline-light btn-sm me-2">Ver Ventas</a></li>
-                    <li class="nav-item"><a href="{{ route('admin.usuarios.index') }}" class="btn btn-outline-light btn-sm me-2">Ver Usuarios Registrados</a></li>
-                    <li class="nav-item"><a href="{{ route('admin.consultas.index') }}" class="btn btn-outline-light btn-sm me-2">Bandeja de Mensajes</a></li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.panel-principal') }}" 
+                        class="btn btn-sm me-2 {{ request()->routeIs('admin.panel-principal') ? 'btn-light active disabled' : 'btn-outline-light' }}">
+                            Panel de Control
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.productos.index') }}" 
+                        class="btn btn-sm me-2 {{ request()->routeIs('admin.productos.*') ? 'btn-light active disabled' : 'btn-outline-light' }}">
+                            Ir a Productos
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.ventas.index') }}" 
+                        class="btn btn-sm me-2 {{ request()->routeIs('admin.ventas.*') ? 'btn-light active disabled' : 'btn-outline-light' }}">
+                            Ver Ventas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.usuarios.index') }}" 
+                        class="btn btn-sm me-2 {{ request()->routeIs('admin.usuarios.*') ? 'btn-light active disabled' : 'btn-outline-light' }}">
+                            Ver Usuarios Registrados
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.consultas.index') }}" 
+                        class="btn btn-sm me-2 {{ request()->routeIs('admin.consultas.*') ? 'btn-light active disabled' : 'btn-outline-light' }}">
+                            Bandeja de Mensajes
+                        </a>
+                    </li>
                 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">

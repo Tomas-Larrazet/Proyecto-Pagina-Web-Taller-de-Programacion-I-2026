@@ -115,7 +115,9 @@
                     <p class="small">
                     Tienda de accesorios. Calidad y estilo para cada ocasión.
                     </p>
+                    @guest
                     <a href="/registroUsuario" class="footer-link">Registrate</a>
+                    @endguest
                 </div>
 
                 
@@ -167,22 +169,16 @@
     @endauth
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Detectamos el header y la barra
         var cabecera = document.getElementById('cabecera');
         var navbar = document.getElementById('miNavbar');
         
         window.addEventListener('scroll', function() {
-            // Calculamos cuánto mide la cabecera (logo + envíos)
             var alturaCabecera = cabecera.offsetHeight;
             
-            // Si el usuario bajó más allá de la cabecera...
             if (window.scrollY >= alturaCabecera) {
-                // Clavamos la barra a la pantalla
                 navbar.classList.add('fixed-top');
-                // Empujamos el cuerpo de la página hacia abajo para que el catálogo no pegue un salto
                 document.body.style.paddingTop = navbar.offsetHeight + 'px';
             } else {
-                // Si vuelve a subir, la soltamos
                 navbar.classList.remove('fixed-top');
                 document.body.style.paddingTop = '0';
             }
@@ -226,10 +222,8 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 
-                // Verificamos en la memoria del navegador si ya vio la promo
                 if (!localStorage.getItem('promo_brightness_vista')) {
                 
-                // Esperamos 2 segundos y mostramos el cartel
                 setTimeout(function() {
                     var myPromoModal = new bootstrap.Modal(document.getElementById('promoModal'));
                     myPromoModal.show();
@@ -237,16 +231,11 @@
                 
                 }
 
-                // LISTA DE BOTONES QUE SILENCIAN LA PROMO:
-                // 1. La cruz de arriba
                 document.getElementById('cerrarPromoX').addEventListener('click', silenciarPromo);
-                // 2. El texto "No, gracias"
                 document.getElementById('cerrarPromoTxt').addEventListener('click', silenciarPromo);
-                // 3. ¡NUEVO! El botón verde de registrarse
                 document.getElementById('btnIrRegistro').addEventListener('click', silenciarPromo);
 
                 function silenciarPromo() {
-                // Esto guarda una marca invisible en su navegador
                 localStorage.setItem('promo_brightness_vista', 'true');
                 }
                 

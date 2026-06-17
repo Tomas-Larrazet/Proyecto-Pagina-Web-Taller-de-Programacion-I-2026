@@ -30,7 +30,6 @@ class User extends Authenticatable
         ];
     }
 
-    // RELACION: Un usuario tiene muchos pedidos
     public function pedidos()
     {
         return $this->hasMany(Pedido::class);
