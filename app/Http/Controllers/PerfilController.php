@@ -23,8 +23,7 @@ class PerfilController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            // Validamos que el email sea requerido, válido, y ÚNICO en la tabla users, 
-            // pero IGNORANDO el ID del usuario actual (para que no de error si guarda sin cambiar el email)
+            // Validamos que el email sea requerido, válido, y unico en la tabla users, 
             'email' => [
                 'required', 
                 'email', 
@@ -32,13 +31,13 @@ class PerfilController extends Controller
             ],
             // La contraseña actual solo es obligatoria si el usuario intentó escribir una nueva
             'password_actual' => 'nullable|required_with:password_nueva|current_password',
-            // La nueva contraseña debe tener mínimo 6 caracteres y coincidir con el campo de confirmación
-            'password_nueva' => 'nullable|min:6|confirmed',
+            // La nueva contraseña debe tener mínimo 8 caracteres y coincidir con el campo de confirmación
+            'password_nueva' => 'nullable|min:8|confirmed',
         ], [
             // Mensajes de error personalizado
             'email.unique' => 'Este correo electrónico ya está registrado por otro usuario.',
             'password_actual.current_password' => 'La contraseña actual no es correcta.',
-            'password_nueva.min' => 'La nueva contraseña debe tener al menos 6 caracteres.',
+            'password_nueva.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
             'password_nueva.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ]);
 

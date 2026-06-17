@@ -111,14 +111,14 @@ class CarritoController extends Controller
             $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
             $totalFinal = $subtotal - $montoDescuento;
 
-            // A) Creamos el PEDIDO general (Guardando el Total Final con descuento)
+            // A) Creamos el pedido general (Guardando el Total Final con descuento)
             $pedido = Pedido::create([
                 'user_id' => Auth::id(),
                 'total' => $totalFinal,
                 'estado' => 'pendiente',
             ]);
 
-            // B) Creamos los DETALLES y restamos el STOCK
+            // B) Creamos los DETALLES y restamos el stock
             foreach ($carrito as $item) {
                 DetallePedido::create([
                     'pedido_id' => $pedido->id,
@@ -192,7 +192,6 @@ class CarritoController extends Controller
 
         if ($codigo === 'BRIGHTNESS') {
             
-            // ¡LA NUEVA VALIDACIÓN!
             // Contamos cuántos pedidos tiene este usuario en su historial
             $comprasPrevias = \App\Models\Pedido::where('user_id', auth()->id())->count();
 

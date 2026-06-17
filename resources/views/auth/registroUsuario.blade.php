@@ -14,10 +14,12 @@
              @csrf
 
              <div class="mb-3"> 
-               <label class="form-label">Nombre Completo</label>
-               <input type="text" name="name" class="form-control @error('nombre') is-invalid @enderror" placeholder="Ingrese su nombre" value="{{ old('nombre') }}" required> 
-                @error('nombre') <div class="invalid-feedback">{{ $message }}</div>@enderror
-              </div> 
+              <label class="form-label">Nombre Completo</label>
+              <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                    placeholder="Ingrese su nombre" value="{{ old('name') }}" required
+                    onkeypress="return /[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/.test(event.key)"> 
+              @error('name') <div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div> 
              
              <div class="mb-3">
                <label class="form-label">Email</label>
@@ -31,9 +33,11 @@
              </div>
 
              <div class="mb-3">
-               <label class="form-label">Telefono (opcional)</label>
-               <input type="text" name="telefono" class="form-control" placeholder="Ingrese su telefono" value="{{ old('telefono') }}"> 
-             </div>
+              <label class="form-label">Telefono (opcional)</label>
+              <input type="text" name="telefono" class="form-control" 
+                    placeholder="Ingrese su telefono" value="{{ old('telefono') }}"
+                    onkeypress="return /[0-9]/.test(event.key)"> 
+            </div>
 
              <div class="mb-3">
                <label class="form-label">Contraseña</label>

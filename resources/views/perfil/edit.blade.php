@@ -56,7 +56,7 @@
                         <!-- Nueva Contraseña -->
                         <div class="mb-3">
                             <label for="password_nueva" class="form-label fw-semibold">Nueva Contraseña</label>
-                            <input type="password" class="form-control @error('password_nueva') is-invalid @enderror" id="password_nueva" name="password_nueva" placeholder="Mínimo 8 caracteres">
+                            <input type="password" class="form-control @error('password_nueva') is-invalid @enderror" id="password_nueva" name="password_nueva" placeholder="Mínimo 8 caracteres" minlenght='8'>
                             @error('password_nueva')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

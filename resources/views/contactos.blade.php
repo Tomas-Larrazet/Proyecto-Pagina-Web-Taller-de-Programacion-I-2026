@@ -109,7 +109,9 @@
                     @guest
                     <div class="mb-3"> 
                         <label class="form-label">Nombre Completo</label>
-                        <input type="text" name="nombre" class="form-control @error('name') is-invalid @enderror" placeholder="Ingrese su nombre" value="{{ old('name') }}" required> 
+                        <input type="text" name="nombre" class="form-control @error('name') is-invalid @enderror" 
+                            placeholder="Ingrese su nombre" value="{{ old('name') }}" required
+                            onkeypress="return /[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/.test(event.key)"> 
                         @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div> 
                     

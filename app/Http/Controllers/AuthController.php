@@ -24,10 +24,10 @@ class AuthController extends Controller
     {
         // 1. VALIDACIÓN
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // 'confirmed' exige el campo password_confirmation
-            'telefono' => 'nullable|string|max:20',
+            'telefono' => 'nullable|string|max:20|regex:/^[0-9+\-\s]+$/',
             'direccion' => 'nullable|string|max:255',
         ]);
 
