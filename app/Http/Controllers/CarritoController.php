@@ -101,20 +101,12 @@ class CarritoController extends Controller
             $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
             $totalFinal = $subtotal - $montoDescuento;
 
-<<<<<<< HEAD
-            // A) Creamos el pedido general (Guardando el Total Final con descuento)
-=======
->>>>>>> feca2781e065753821e35c163d45c33ee5181d31
             $pedido = Pedido::create([
                 'user_id' => Auth::id(),
                 'total' => $totalFinal,
                 'estado' => 'pendiente',
             ]);
 
-<<<<<<< HEAD
-            // B) Creamos los DETALLES y restamos el stock
-=======
->>>>>>> feca2781e065753821e35c163d45c33ee5181d31
             foreach ($carrito as $item) {
                 DetallePedido::create([
                     'pedido_id' => $pedido->id,
@@ -181,12 +173,7 @@ class CarritoController extends Controller
         $codigo = strtoupper($request->input('codigo_cupon'));
 
         if ($codigo === 'BRIGHTNESS') {
-            
-<<<<<<< HEAD
-            // Contamos cuántos pedidos tiene este usuario en su historial
-=======
->>>>>>> feca2781e065753821e35c163d45c33ee5181d31
-            $comprasPrevias = \App\Models\Pedido::where('user_id', auth()->id())->count();
+         $comprasPrevias = \App\Models\Pedido::where('user_id', auth()->id())->count();
 
             if ($comprasPrevias > 0) {
                 return back()->with('error', 'El cupón BRIGHTNESS es válido únicamente para tu primera compra.');
