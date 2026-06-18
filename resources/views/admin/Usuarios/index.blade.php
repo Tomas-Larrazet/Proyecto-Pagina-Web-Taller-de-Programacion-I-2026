@@ -51,22 +51,24 @@
                                         <span class="badge bg-primary">Cliente</span>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    @if($usuario->id !== auth()->id())
-                                        <form action="{{ route('admin.usuarios.destroy', $usuario->id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que querés dar de baja a {{ $usuario->name }}? Esta acción le quitará el acceso al panel.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Dar de baja">
-                                                <i class="bi bi-trash3-fill"></i> <span class="d-none d-lg-inline">Baja</span>
-                                            </button>
-                                        </form>
+                                <td>
+                                @if($usuario->id !== auth()->id())
+                                    <form action="{{ route('admin.usuarios.cambiarRol', $usuario->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="rol" class="form-select form-select-sm fw-bold {{ $usuario->rol === 'admin' ? 'text-danger' : 'text-primary' }}" style="width: auto;" onchange="this.form.submit()">
+                                            <option value="cliente" {{ $usuario->rol !== 'admin' ? 'selected' : '' }}>Cliente</option>
+                                            <option value="admin" {{ $usuario->rol === 'admin' ? 'selected' : '' }}>Administrador</option>
+                                        </select>
+                                    </form>
+                                @else
+                                    @if($usuario->rol === 'admin')
+                                        <span class="badge bg-danger">Administrador</span>
                                     @else
-                                        <button class="btn btn-sm btn-outline-secondary" disabled title="Es tu cuenta actual">
-                                            <i class="bi bi-person-check-fill"></i> <span class="d-none d-lg-inline">Actual</span>
-                                        </button>
+                                        <span class="badge bg-primary">Cliente</span>
                                     @endif
-                                </td>
-                            </tr>
+                                @endif
+                            </td>
                         @empty
                             <tr>
                                 <td colspan="6" class="text-center py-4 text-muted">Aún no hay usuarios registrados.</td>

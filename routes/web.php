@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/compra-exitosa/{id}', [CarritoController::class, 'compraExitosa'])->name('compra.exitosa');
     Route::get('/mis-compras/factura/{id}', [App\Http\Controllers\PedidoController::class, 'descargarFactura'])->name('pedidos.factura');
+    Route::post('/carrito/actualizar-cantidad/{id}', [CarritoController::class, 'actualizarCantidad'])->name('carrito.actualizarCantidad');
 
 });
 
@@ -102,6 +103,7 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->group(f
 
     Route::delete('/admin/usuarios/{id}', [App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.usuarios.destroy');
 
+    Route::put('/admin/usuarios/{id}/rol', [App\Http\Controllers\AdminController::class, 'cambiarRol'])->name('admin.usuarios.cambiarRol');
 
 
 });

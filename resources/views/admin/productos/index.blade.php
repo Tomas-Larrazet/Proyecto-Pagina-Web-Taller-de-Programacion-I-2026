@@ -14,6 +14,53 @@
         </div>
     </div>
 
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form action="{{ route('admin.productos.index') }}" method="GET" class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Buscar producto</label>
+                    <input type="text" name="buscar" class="form-control form-control-sm" placeholder="Nombre del producto" value="{{ request('buscar') }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Categoría</label>
+                    <select name="categoria" class="form-select form-select-sm">
+                        <option value="">Todas</option>
+                        @foreach($categorias as $categoria)
+                            <option value="{{ $categoria->id }}" {{ request('categoria') == $categoria->id ? 'selected' : '' }}>
+                                {{ $categoria->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Stock</label>
+                    <select name="stock" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        <option value="bajo" {{ request('stock') == 'bajo' ? 'selected' : '' }}>Stock bajo (≤ 5)</option>
+                        <option value="sin_stock" {{ request('stock') == 'sin_stock' ? 'selected' : '' }}>Sin stock (0)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success btn-sm w-100">
+                        <i class="bi bi-funnel-fill"></i> Filtrar
+                    </button>
+                </div>
+
+                @if(request('buscar') || request('categoria') || request('stock'))
+                    <div class="col-12">
+                        <a href="{{ route('admin.productos.index') }}" class="text-danger small fw-bold text-decoration-none">
+                            <i class="bi bi-x-circle"></i> Limpiar filtros
+                        </a>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -30,7 +77,7 @@
                     </thead>
                     <tbody>
                         @forelse($productos as $producto)
-                            <tr>
+                            <tr class="{{ $producto->stock <= 5 ? 'table-warning' : '' }}">
                                 <td class="d-none d-lg-table-cell">{{ $producto->id }}</td>
                                 <td>
                                     @if($producto->url_imagen)
@@ -46,7 +93,14 @@
                                     </div>
                                 </td>
                                 <td class="d-none d-md-table-cell text-nowrap">${{ number_format($producto->precio, 2) }}</td>
-                                <td class="d-none d-md-table-cell">{{ $producto->stock }}</td>
+                                <td class="d-none d-md-table-cell">
+                                    {{ $producto->stock }}
+                                    @if($producto->stock == 0)
+                                        <span class="badge bg-danger ms-1">Sin stock</span>
+                                    @elseif($producto->stock <= 5)
+                                        <span class="badge bg-warning text-dark ms-1">Bajo</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex gap-1 flex-wrap">
                                         <a href="{{ route('admin.productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">Editar</a>
@@ -60,7 +114,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">No hay productos cargados todavía.</td>
+                                <td colspan="6" class="text-center py-4">No se encontraron productos con esos filtros.</td>
                             </tr>
                         @endforelse
                     </tbody>

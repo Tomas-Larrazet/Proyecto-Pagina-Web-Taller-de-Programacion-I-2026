@@ -10,6 +10,7 @@ use App\Models\Consulta;
 use App\Models\User;
 use App\Models\DetallePedido;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -18,9 +19,11 @@ class AdminController extends Controller
 
         $totalProductos = Producto::count();
 
-        $totalVentas = Pedido::count();
+        // Solo contamos ventas que NO estén canceladas
+        $totalVentas = Pedido::where('estado', '!=', 'cancelado')->count();
 
-        $ingresos = Pedido::sum('total');
+        // Solo sumamos ingresos de ventas NO canceladas
+        $ingresos = Pedido::where('estado', '!=', 'cancelado')->sum('total');
 
         $productosStockBajo = Producto::where('stock','<=',5)
         ->get();
@@ -29,6 +32,9 @@ class AdminController extends Controller
         'producto_id',
         \DB::raw('SUM(cantidad) as total_vendido')
         )
+        ->whereHas('pedido', function($q) {
+            $q->where('estado', '!=', 'cancelado');
+        })
         ->groupBy('producto_id')
         ->orderByDesc('total_vendido')
         ->with('producto')
@@ -45,10 +51,30 @@ class AdminController extends Controller
         ));
     }
 
-    public function productos()
+    public function productos(Request $request)
     {
-        $productos = Producto::all();
-        return view('admin.productos.index', compact('productos'));
+        $query = Producto::with('categoria');
+
+        if ($request->filled('buscar')) {
+            $query->where('nombre', 'LIKE', '%' . $request->buscar . '%');
+        }
+
+        if ($request->filled('categoria')) {
+            $query->where('categoria_id', $request->categoria);
+        }
+
+        if ($request->filled('stock')) {
+            if ($request->stock == 'bajo') {
+                $query->where('stock', '>', 0)->where('stock', '<=', 5);
+            } elseif ($request->stock == 'sin_stock') {
+                $query->where('stock', 0);
+            }
+        }
+
+        $productos = $query->orderBy('id', 'asc')->get();
+        $categorias = Categoria::all();
+
+        return view('admin.productos.index', compact('productos', 'categorias'));
     }
 
     public function create()
@@ -133,12 +159,34 @@ class AdminController extends Controller
         return redirect()->route('admin.productos.index')->with('success', '¡Producto actualizado correctamente!');
     }
 
-    public function ventas()
-    {
-        $ventas = Pedido::orderBy('created_at', 'desc')->get();
+    public function ventas(Request $request)
+{
+    $query = Pedido::query();
 
-        return  view('admin.ventas.index', compact('ventas'));
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->estado);
     }
+
+    if ($request->filled('fecha_desde')) {
+        $query->whereDate('created_at', '>=', $request->fecha_desde);
+    }
+
+    if ($request->filled('fecha_hasta')) {
+        $query->whereDate('created_at', '<=', $request->fecha_hasta);
+    }
+
+    if ($request->filled('monto_min')) {
+        $query->where('total', '>=', $request->monto_min);
+    }
+
+    if ($request->filled('monto_max')) {
+        $query->where('total', '<=', $request->monto_max);
+    }
+
+    $ventas = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.ventas.index', compact('ventas'));
+}
 
     public function showVenta($id)
     {
@@ -154,15 +202,64 @@ class AdminController extends Controller
             'estado'=>'required|in:pendiente,pagado,enviado,entregado,cancelado'
         ]);
 
-        $pedido->estado = $request->estado;
-        $pedido->save();
+        $estadoAnterior = $pedido->estado;
+        $estadoNuevo = $request->estado;
 
-        return redirect()->back()->with('success','Estado actualizado correctamente');
+        DB::beginTransaction();
+
+        try {
+            // Si el pedido se cancela y antes NO estaba cancelado, devolvemos el stock
+            if ($estadoNuevo === 'cancelado' && $estadoAnterior !== 'cancelado') {
+                $detalles = DetallePedido::where('pedido_id', $pedido->id)->get();
+
+                foreach ($detalles as $detalle) {
+                    $producto = Producto::find($detalle->producto_id);
+                    if ($producto) {
+                        $producto->stock += $detalle->cantidad;
+                        $producto->save();
+                    }
+                }
+            }
+
+            // Si se reactiva un pedido que estaba cancelado, volvemos a descontar el stock
+            if ($estadoAnterior === 'cancelado' && $estadoNuevo !== 'cancelado') {
+                $detalles = DetallePedido::where('pedido_id', $pedido->id)->get();
+
+                foreach ($detalles as $detalle) {
+                    $producto = Producto::find($detalle->producto_id);
+                    if ($producto) {
+                        $producto->stock -= $detalle->cantidad;
+                        $producto->save();
+                    }
+                }
+            }
+
+            $pedido->estado = $estadoNuevo;
+            $pedido->save();
+
+            DB::commit();
+
+            return redirect()->back()->with('success','Estado actualizado correctamente');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Ocurrió un error al actualizar el estado del pedido.');
+        }
     }
 
-    public function consultas()
+    public function consultas(Request $request)
     {
-        $consultas = Consulta::orderBy('created_at', 'desc')->get();
+        $query = Consulta::query();
+
+        if ($request->filled('tipo')) {
+            if ($request->tipo == 'registrado') {
+                $query->whereNotNull('user_id');
+            } elseif ($request->tipo == 'visitante') {
+                $query->whereNull('user_id');
+            }
+        }
+
+        $consultas = $query->orderBy('created_at', 'desc')->get();
         return view('admin.consultas.index', compact('consultas'));
     }
 
@@ -227,5 +324,24 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.productos.index')->with('success', '¡Nueva categoría creada con éxito!');
+    }
+
+    public function cambiarRol(Request $request, $id)
+    {
+        $request->validate([
+            'rol' => 'required|in:cliente,admin',
+        ]);
+
+        $usuario = User::findOrFail($id);
+
+        // No permitimos que un admin se quite el rol a sí mismo (seguridad extra)
+        if ($usuario->id === auth()->id()) {
+            return back()->with('error', 'No podés cambiar tu propio rol.');
+        }
+
+        $usuario->rol = $request->rol;
+        $usuario->save();
+
+        return back()->with('success', 'El rol de ' . $usuario->name . ' fue actualizado a ' . ($request->rol === 'admin' ? 'Administrador' : 'Cliente') . '.');
     }
 }

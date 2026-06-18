@@ -76,65 +76,74 @@ class CarritoController extends Controller
     }
 
     public function comprar()
-    {
-        $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
+{
+    $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
 
-        if (Auth::user()->rol === 'admin') { 
-            return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
-        }
+    if (Auth::user()->rol === 'admin') { 
+        return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
+    }
 
-        $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
+    if ($carrito->isEmpty()) {
+        return back()->with('error', 'Tu carrito está vacío.');
+    }
 
-        if ($carrito->isEmpty()) {
-            return back()->with('error', 'Tu carrito está vacío.');
-        }
+    DB::beginTransaction();
 
-        DB::beginTransaction();
+    try {
+        // VALIDACIÓN DE STOCK CON BLOQUEO, antes de cualquier cálculo
+        foreach ($carrito as $item) {
+            // lockForUpdate bloquea esta fila hasta que termine la transacción
+            $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
 
-        try {
-            $subtotal = 0;
-            foreach ($carrito as $item) {
-                $subtotal += $item->producto->precio * $item->cantidad;
+            if (!$producto || $producto->stock < $item->cantidad) {
+                DB::rollBack();
+                return back()->with('error', 'Lo sentimos, "' . ($producto->nombre ?? 'un producto') . '" ya no tiene suficiente stock disponible. Por favor, revisá tu carrito.');
             }
+        }
 
-            $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
-            $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
-            $totalFinal = $subtotal - $montoDescuento;
+        $subtotal = 0;
+        foreach ($carrito as $item) {
+            $subtotal += $item->producto->precio * $item->cantidad;
+        }
 
-            $pedido = Pedido::create([
-                'user_id' => Auth::id(),
-                'total' => $totalFinal,
-                'estado' => 'pendiente',
+        $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
+        $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
+        $totalFinal = $subtotal - $montoDescuento;
+
+        // A) Creamos el pedido general (Guardando el Total Final con descuento)
+        $pedido = Pedido::create([
+            'user_id' => Auth::id(),
+            'total' => $totalFinal,
+            'estado' => 'pendiente',
+        ]);
+
+        // B) Creamos los DETALLES y restamos el stock
+        foreach ($carrito as $item) {
+            DetallePedido::create([
+                'pedido_id' => $pedido->id,
+                'producto_id' => $item->producto_id,
+                'cantidad' => $item->cantidad,
+                'precio_unitario' => $item->producto->precio,
             ]);
 
-            foreach ($carrito as $item) {
-                DetallePedido::create([
-                    'pedido_id' => $pedido->id,
-                    'producto_id' => $item->producto_id,
-                    'cantidad' => $item->cantidad,
-                    'precio_unitario' => $item->producto->precio,
-                ]);
-
-                $producto = $item->producto;
-                $producto->stock -= $item->cantidad;
-                $producto->save();
-            }
-
-            Carrito::where('user_id', Auth::id())->delete();
-
-            session()->forget('descuento_porcentaje');
-
-            DB::commit();
-
-            DB::commit();
-
-            return redirect()->route('compra.exitosa', $pedido->id);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Ocurrió un error al procesar tu compra. Por favor, intenta de nuevo.');
+            // Volvemos a traer el producto con lock para descontar el stock de forma segura
+            $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
+            $producto->stock -= $item->cantidad;
+            $producto->save();
         }
+
+        Carrito::where('user_id', Auth::id())->delete();
+        session()->forget('descuento_porcentaje');
+
+        DB::commit();
+
+        return redirect()->route('compra.exitosa', $pedido->id);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Ocurrió un error al procesar tu compra. Por favor, intenta de nuevo.');
     }
+}
 
     public function actualizar(Request $request, $id)
     {
@@ -193,6 +202,34 @@ class CarritoController extends Controller
         
         return view('carrito.exito', compact('pedido'));
     }
+
+    public function actualizarCantidad(Request $request, $id)
+{
+    $request->validate([
+        'cantidad' => 'required|integer|min:1',
+    ]);
+
+    $itemCarrito = Carrito::with('producto')
+                          ->where('user_id', Auth::id())
+                          ->where('producto_id', $id)
+                          ->first();
+
+    if (!$itemCarrito) {
+        return back()->with('error', 'El producto no está en tu carrito.');
+    }
+
+    $stockDisponible = $itemCarrito->producto->stock;
+    $cantidadSolicitada = $request->input('cantidad');
+
+    if ($cantidadSolicitada > $stockDisponible) {
+        return back()->with('error', 'Solo quedan ' . $stockDisponible . ' unidades disponibles de "' . $itemCarrito->producto->nombre . '".');
+    }
+
+    $itemCarrito->cantidad = $cantidadSolicitada;
+    $itemCarrito->save();
+
+    return back()->with('success', 'Cantidad actualizada correctamente.');
+}
 
 }
 

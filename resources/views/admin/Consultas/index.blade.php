@@ -10,6 +10,36 @@
         <a href="{{ route('admin.panel-principal') }}" class="btn btn-secondary btn-sm btn-sm-md">Volver al Panel</a>
     </div>
 
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form action="{{ route('admin.consultas.index') }}" method="GET" class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Tipo de usuario</label>
+                    <select name="tipo" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        <option value="registrado" {{ request('tipo') == 'registrado' ? 'selected' : '' }}>Registrado</option>
+                        <option value="visitante" {{ request('tipo') == 'visitante' ? 'selected' : '' }}>Visitante</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">
+                        <i class="bi bi-funnel-fill"></i> Filtrar
+                    </button>
+                </div>
+
+                @if(request('tipo'))
+                    <div class="col-12">
+                        <a href="{{ route('admin.consultas.index') }}" class="text-danger small fw-bold text-decoration-none">
+                            <i class="bi bi-x-circle"></i> Limpiar filtro
+                        </a>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm border-warning">
         <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">Mensajes Recibidos</h5>
@@ -54,7 +84,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">No hay mensajes en la bandeja de entrada.</td>
+                                <td colspan="5" class="text-center py-4 text-muted">No se encontraron mensajes con ese filtro.</td>
                             </tr>
                         @endforelse
                     </tbody>
