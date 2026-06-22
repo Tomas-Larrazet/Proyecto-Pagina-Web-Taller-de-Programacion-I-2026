@@ -159,24 +159,29 @@
 
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-danger text-white">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            Stock bajo
+                        <div class="card-header bg-danger text-white fw-bold d-flex align-items-center justify-content-between">
+                            <span><i class="bi bi-exclamation-triangle-fill me-2"></i>Alerta de Stock Bajo</span>
+                            <span class="badge bg-white text-danger">{{ count($productosStockBajo ?? []) }}</span>
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-body p-0">
                             @forelse($productosStockBajo ?? [] as $producto)
-                                <p class="mb-1">
-                                    {{ $producto->nombre }}
-
-                                    <span class="badge bg-danger">
-                                        {{ $producto->stock }}
-                                    </span>
-                                </p>
+                                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                                    <span class="fw-semibold text-dark">{{ $producto->nombre }}</span>
+                                    <div>
+                                        <span class="badge bg-danger px-2 py-1.5" title="Stock actual">
+                                            {{ $producto->stock }} u.
+                                        </span>
+                                        <span class="text-muted small ms-2" style="font-size: 0.8rem;">
+                                            (Mín: {{ $producto->stock_minimo }})
+                                        </span>
+                                    </div>
+                                </div>
                             @empty
-                                <p class="text-muted">
-                                    Todos los productos tienen stock suficiente
-                                </p>
+                                <div class="text-center py-4">
+                                    <i class="bi bi-shield-check text-success fs-2 d-block mb-1"></i>
+                                    <p class="text-muted mb-0">Todos los productos tienen stock suficiente</p>
+                                </div>
                             @endforelse
                         </div>
                     </div>

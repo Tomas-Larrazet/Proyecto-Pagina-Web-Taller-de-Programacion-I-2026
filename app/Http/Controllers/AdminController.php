@@ -25,8 +25,7 @@ class AdminController extends Controller
         // Solo sumamos ingresos de ventas NO canceladas
         $ingresos = Pedido::where('estado', '!=', 'cancelado')->sum('total');
 
-        $productosStockBajo = Producto::where('stock','<=',5)
-        ->get();
+        $productosStockBajo = Producto::whereColumn('stock', '<=', 'stock_minimo')->get();
 
         $topProductos = DetallePedido::select(
         'producto_id',
@@ -65,7 +64,7 @@ class AdminController extends Controller
 
         if ($request->filled('stock')) {
             if ($request->stock == 'bajo') {
-                $query->where('stock', '>', 0)->where('stock', '<=', 5);
+                $query->where('stock', '>', 0)->whereColumn('stock', '<=', 'stock_minimo');
             } elseif ($request->stock == 'sin_stock') {
                 $query->where('stock', 0);
             }
@@ -91,6 +90,7 @@ class AdminController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'stock_minimo' => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|max:2048'
         ]);
@@ -106,6 +106,7 @@ class AdminController extends Controller
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'stock' => $request->stock,
+            'stock_minimo' => $request->stock_minimo,
             'categoria_id' => $request->categoria_id,
             'url_imagen' => $rutaImagen,
             'activo' => 1 
@@ -138,6 +139,7 @@ class AdminController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'stock_minimo' => 'required|integer|min:0',
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|max:2048'
         ]);
@@ -148,6 +150,7 @@ class AdminController extends Controller
         $producto->descripcion = $request->descripcion;
         $producto->precio = $request->precio;
         $producto->stock = $request->stock;
+        $producto->stock_minimo = $request->stock_minimo;
         $producto->categoria_id = $request->categoria_id;
 
         if ($request->hasFile('imagen')) {

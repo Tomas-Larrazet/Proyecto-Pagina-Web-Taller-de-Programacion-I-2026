@@ -39,7 +39,7 @@
                     <label class="form-label small fw-bold">Stock</label>
                     <select name="stock" class="form-select form-select-sm">
                         <option value="">Todos</option>
-                        <option value="bajo" {{ request('stock') == 'bajo' ? 'selected' : '' }}>Stock bajo (≤ 5)</option>
+                        <option value="bajo" {{ request('stock') == 'bajo' ? 'selected' : '' }}>Stock bajo (Segun producto)</option>
                         <option value="sin_stock" {{ request('stock') == 'sin_stock' ? 'selected' : '' }}>Sin stock (0)</option>
                     </select>
                 </div>
@@ -71,13 +71,13 @@
                             <th>Imagen</th>
                             <th>Nombre</th>
                             <th class="d-none d-md-table-cell">Precio</th>
-                            <th class="d-none d-md-table-cell">Stock</th>
+                            <th class="d-none d-md-table-cell">Stock / Mínimo</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($productos as $producto)
-                            <tr class="{{ $producto->stock <= 5 ? 'table-warning' : '' }}">
+                            <tr class="{{ $producto->stock <= $producto->stock_minimo ? 'table-warning' : '' }}">
                                 <td class="d-none d-lg-table-cell">{{ $producto->id }}</td>
                                 <td>
                                     @if($producto->url_imagen)
@@ -90,16 +90,20 @@
                                     {{ $producto->nombre }}
                                     <div class="d-md-none text-muted small mt-1">
                                         ${{ number_format($producto->precio, 2) }} · Stock: {{ $producto->stock }}
+                                        <span class="text-secondary">(Mín: {{ $producto->stock_minimo }})</span>
                                     </div>
                                 </td>
                                 <td class="d-none d-md-table-cell text-nowrap">${{ number_format($producto->precio, 2) }}</td>
+
                                 <td class="d-none d-md-table-cell">
-                                    {{ $producto->stock }}
+                                    <span class="fw-bold">{{ $producto->stock }} u.</span>
                                     @if($producto->stock == 0)
                                         <span class="badge bg-danger ms-1">Sin stock</span>
-                                    @elseif($producto->stock <= 5)
+                                    @elseif($producto->stock <= $producto->stock_minimo)
                                         <span class="badge bg-warning text-dark ms-1">Bajo</span>
                                     @endif
+
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Mínimo: {{ $producto->stock_minimo }}</small>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-1 flex-wrap">

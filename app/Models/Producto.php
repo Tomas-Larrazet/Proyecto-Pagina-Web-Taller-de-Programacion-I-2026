@@ -14,6 +14,7 @@ class Producto extends Model
         'descripcion',
         'precio',
         'stock',
+        'stock_minimo',
         'url_imagen',
         'activo',
         'categoria_id',
@@ -22,6 +23,7 @@ class Producto extends Model
     protected $casts = [
         'precio' => 'decimal:2',
         'stock' => 'integer',
+        'stock_minimo' => 'integer',
         'activo' => 'boolean',
     ];
 
