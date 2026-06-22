@@ -57,6 +57,18 @@
                             <small class="text-muted">Dejá este campo vacío si querés mantener la imagen actual.</small>
                         </div>
 
+                        <div class="mb-4">
+                            <label class="form-label">Estado del Producto</label>
+                            <select name="activo" class="form-select" required>
+                                <option value="1" {{ old('activo', $producto->activo) == 1 ? 'selected' : '' }}>
+                                    🟢 Activo (Visible en la tienda)
+                                </option>
+                                <option value="0" {{ old('activo', $producto->activo) == 0 ? 'selected' : '' }}>
+                                    🔴 Inactivo (Oculto / Pausado)
+                                </option>
+                            </select>
+                        </div>
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('admin.productos.index') }}" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-warning text-dark fw-bold">Actualizar Producto</button>

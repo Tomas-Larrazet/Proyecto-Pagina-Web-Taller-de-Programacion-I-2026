@@ -18,7 +18,7 @@
         <div class="card-body">
             <form action="{{ route('admin.productos.index') }}" method="GET" class="row g-3 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label small fw-bold">Buscar producto</label>
                     <input type="text" name="buscar" class="form-control form-control-sm" placeholder="Nombre del producto" value="{{ request('buscar') }}">
                 </div>
@@ -35,7 +35,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label small fw-bold">Stock</label>
                     <select name="stock" class="form-select form-select-sm">
                         <option value="">Todos</option>
@@ -45,12 +45,21 @@
                 </div>
 
                 <div class="col-md-2">
+                    <label class="form-label small fw-bold">Estado</label>
+                    <select name="activo" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        <option value="1" {{ request('activo') == '1' ? 'selected' : '' }}>Activo</option>
+                        <option value="0" {{ request('activo') == '0' ? 'selected' : '' }}>Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-success btn-sm w-100">
                         <i class="bi bi-funnel-fill"></i> Filtrar
                     </button>
                 </div>
 
-                @if(request('buscar') || request('categoria') || request('stock'))
+                @if(request('buscar') || request('categoria') || request('stock' ) || request('activo') != '')
                     <div class="col-12">
                         <a href="{{ route('admin.productos.index') }}" class="text-danger small fw-bold text-decoration-none">
                             <i class="bi bi-x-circle"></i> Limpiar filtros
@@ -71,13 +80,13 @@
                             <th>Imagen</th>
                             <th>Nombre</th>
                             <th class="d-none d-md-table-cell">Precio</th>
-                            <th class="d-none d-md-table-cell">Stock / Mínimo</th>
+                            <th class="d-none d-md-table-cell">Stock / Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($productos as $producto)
-                            <tr class="{{ $producto->stock <= $producto->stock_minimo ? 'table-warning' : '' }}">
+                            <tr class="{{ $producto->stock <= $producto->stock_minimo ? 'table-warning' : '' }} {{ $producto->activo == 0 ? 'opacity-75' : '' }}">
                                 <td class="d-none d-lg-table-cell">{{ $producto->id }}</td>
                                 <td>
                                     @if($producto->url_imagen)
@@ -91,17 +100,33 @@
                                     <div class="d-md-none text-muted small mt-1">
                                         ${{ number_format($producto->precio, 2) }} · Stock: {{ $producto->stock }}
                                         <span class="text-secondary">(Mín: {{ $producto->stock_minimo }})</span>
+                                        <div class="mt-1">
+                                            @if($producto->activo)
+                                                <span class="badge bg-success">Activo</span>
+                                            @else
+                                                <span class="badge bg-secondary">Inactivo</span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="d-none d-md-table-cell text-nowrap">${{ number_format($producto->precio, 2) }}</td>
 
                                 <td class="d-none d-md-table-cell">
-                                    <span class="fw-bold">{{ $producto->stock }} u.</span>
-                                    @if($producto->stock == 0)
-                                        <span class="badge bg-danger ms-1">Sin stock</span>
-                                    @elseif($producto->stock <= $producto->stock_minimo)
-                                        <span class="badge bg-warning text-dark ms-1">Bajo</span>
-                                    @endif
+                                    <div class="d-flex align-items-center gap-1 mb-1 flex-wrap">
+                                        <span class="fw-bold">{{ $producto->stock }} u.</span>
+
+                                        @if($producto->stock == 0)
+                                            <span class="badge bg-danger ms-1">Sin stock</span>
+                                        @elseif($producto->stock <= $producto->stock_minimo)
+                                            <span class="badge bg-warning text-dark ms-1">Bajo</span>
+                                        @endif
+
+                                        @if($producto->activo)
+                                            <span class="badge bg-success">Activo</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        @endif
+                                    </div>
 
                                     <small class="text-muted d-block" style="font-size: 0.75rem;">Mínimo: {{ $producto->stock_minimo }}</small>
                                 </td>

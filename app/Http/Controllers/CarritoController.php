@@ -9,6 +9,7 @@ use App\Models\DetallePedido;
 use App\Models\Carrito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CarritoController extends Controller
 {
@@ -75,75 +76,98 @@ class CarritoController extends Controller
         return back()->with('success', 'El carrito ha sido vaciado.');
     }
 
-    public function comprar()
-{
-    $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
 
-    if (Auth::user()->rol === 'admin') { 
-        return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
-    }
+    public function comprar(Request $request)
+    {
+        if (Auth::user()->rol === 'admin') { 
+            return back()->with('error', 'Las cuentas de administrador no pueden realizar compras.');
+        }
 
-    if ($carrito->isEmpty()) {
-        return back()->with('error', 'Tu carrito está vacío.');
-    }
+        $carrito = Carrito::with('producto')->where('user_id', Auth::id())->get();
 
-    DB::beginTransaction();
+        if ($carrito->isEmpty()) {
+            return back()->with('error', 'Tu carrito está vacío.');
+        }
 
-    try {
-        // VALIDACIÓN DE STOCK CON BLOQUEO, antes de cualquier cálculo
-        foreach ($carrito as $item) {
-            // lockForUpdate bloquea esta fila hasta que termine la transacción
-            $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
+        DB::beginTransaction();
 
-            if (!$producto || $producto->stock < $item->cantidad) {
-                DB::rollBack();
-                return back()->with('error', 'Lo sentimos, "' . ($producto->nombre ?? 'un producto') . '" ya no tiene suficiente stock disponible. Por favor, revisá tu carrito.');
+        try {
+            $subtotal = 0;
+            $productosBloqueados = [];
+
+            foreach ($carrito as $item) {
+                $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
+
+                if (!$producto || !$producto->activo) {
+                    DB::rollBack();
+                    return back()->with('error', 'El producto "' . ($producto->nombre ?? 'eliminado') . '" ya no está disponible.');
+                }
+
+                if ($producto->stock < $item->cantidad) {
+                    DB::rollBack();
+                    return back()->with('error', 'Solo quedan ' . $producto->stock . ' unidades de "' . $producto->nombre . '".');
+                }
+
+                $subtotal += $producto->precio * $item->cantidad;
+                
+                $productosBloqueados[$item->id] = $producto;
             }
-        }
 
-        $subtotal = 0;
-        foreach ($carrito as $item) {
-            $subtotal += $item->producto->precio * $item->cantidad;
-        }
+            $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
+            
+            if ($porcentajeDescuento > 0) {
+                $comprasPrevias = Pedido::where('user_id', Auth::id())
+                                        ->where('estado', '!=', 'cancelado')
+                                        ->count();
+                if ($comprasPrevias > 0) {
+                    DB::rollBack();
+                    session()->forget('descuento_porcentaje'); 
+                    return back()->with('error', 'El cupón aplicado es válido únicamente para tu primera compra.');
+                }
+            }
 
-        $porcentajeDescuento = session()->get('descuento_porcentaje', 0);
-        $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
-        $totalFinal = $subtotal - $montoDescuento;
+            $montoDescuento = ($subtotal * $porcentajeDescuento) / 100;
+            $totalFinal = $subtotal - $montoDescuento;
 
-        // A) Creamos el pedido general (Guardando el Total Final con descuento)
-        $pedido = Pedido::create([
-            'user_id' => Auth::id(),
-            'total' => $totalFinal,
-            'estado' => 'pendiente',
-        ]);
+            if ($request->has('total_esperado') && round($totalFinal, 2) != round($request->input('total_esperado'), 2)) {
+                DB::rollBack();
+                return back()->with('error', 'Los precios de algunos productos o condiciones de tu carrito han sido actualizados. Por favor, revisá el nuevo total antes de confirmar.');
+            }
 
-        // B) Creamos los DETALLES y restamos el stock
-        foreach ($carrito as $item) {
-            DetallePedido::create([
-                'pedido_id' => $pedido->id,
-                'producto_id' => $item->producto_id,
-                'cantidad' => $item->cantidad,
-                'precio_unitario' => $item->producto->precio,
+            $pedido = Pedido::create([
+                'user_id' => Auth::id(),
+                'total'   => $totalFinal,
+                'estado'  => 'pendiente',
             ]);
 
-            // Volvemos a traer el producto con lock para descontar el stock de forma segura
-            $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
-            $producto->stock -= $item->cantidad;
-            $producto->save();
+            foreach ($carrito as $item) {
+                $producto = $productosBloqueados[$item->id];
+
+                DetallePedido::create([
+                    'pedido_id'       => $pedido->id,
+                    'producto_id'     => $producto->id,
+                    'cantidad'        => $item->cantidad,
+                    'precio_unitario' => $producto->precio,
+                ]);
+
+                $producto->stock -= $item->cantidad;
+                $producto->save();
+            }
+
+            Carrito::where('user_id', Auth::id())->delete();
+            session()->forget('descuento_porcentaje');
+
+            DB::commit();
+
+            return redirect()->route('compra.exitosa', $pedido->id);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en compra de usuario ' . Auth::id() . ': ' . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al procesar tu compra. Por favor, intenta de nuevo.');
         }
-
-        Carrito::where('user_id', Auth::id())->delete();
-        session()->forget('descuento_porcentaje');
-
-        DB::commit();
-
-        return redirect()->route('compra.exitosa', $pedido->id);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Ocurrió un error al procesar tu compra. Por favor, intenta de nuevo.');
     }
-}
+
 
     public function actualizar(Request $request, $id)
     {
@@ -204,32 +228,32 @@ class CarritoController extends Controller
     }
 
     public function actualizarCantidad(Request $request, $id)
-{
-    $request->validate([
-        'cantidad' => 'required|integer|min:1',
-    ]);
+    {
+        $request->validate([
+            'cantidad' => 'required|integer|min:1',
+        ]);
 
-    $itemCarrito = Carrito::with('producto')
-                          ->where('user_id', Auth::id())
-                          ->where('producto_id', $id)
-                          ->first();
+        $itemCarrito = Carrito::with('producto')
+                            ->where('user_id', Auth::id())
+                            ->where('producto_id', $id)
+                            ->first();
 
-    if (!$itemCarrito) {
-        return back()->with('error', 'El producto no está en tu carrito.');
+        if (!$itemCarrito) {
+            return back()->with('error', 'El producto no está en tu carrito.');
+        }
+
+        $stockDisponible = $itemCarrito->producto->stock;
+        $cantidadSolicitada = $request->input('cantidad');
+
+        if ($cantidadSolicitada > $stockDisponible) {
+            return back()->with('error', 'Solo quedan ' . $stockDisponible . ' unidades disponibles de "' . $itemCarrito->producto->nombre . '".');
+        }
+
+        $itemCarrito->cantidad = $cantidadSolicitada;
+        $itemCarrito->save();
+
+        return back()->with('success', 'Cantidad actualizada correctamente.');
     }
-
-    $stockDisponible = $itemCarrito->producto->stock;
-    $cantidadSolicitada = $request->input('cantidad');
-
-    if ($cantidadSolicitada > $stockDisponible) {
-        return back()->with('error', 'Solo quedan ' . $stockDisponible . ' unidades disponibles de "' . $itemCarrito->producto->nombre . '".');
-    }
-
-    $itemCarrito->cantidad = $cantidadSolicitada;
-    $itemCarrito->save();
-
-    return back()->with('success', 'Cantidad actualizada correctamente.');
-}
 
 }
 

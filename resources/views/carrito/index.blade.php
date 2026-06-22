@@ -156,6 +156,7 @@
                 
                 <form action="{{ url('/carrito/comprar') }}" method="POST" class="d-grid">
                     @csrf
+                    <input type="hidden" name="total_esperado" value="{{ $total }}">
                     <button type="submit" class="btn btn-warning btn-lg fw-bold rounded-pill shadow-sm" style="background-color: rgb(248, 233, 69);">
                         Confirmar Compra
                     </button>

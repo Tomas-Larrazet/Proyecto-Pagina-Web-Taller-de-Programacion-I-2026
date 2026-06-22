@@ -70,6 +70,10 @@ class AdminController extends Controller
             }
         }
 
+        if (request()->has('activo') && request('activo') != '') {
+            $query->where('activo', request('activo'));
+        }
+
         $productos = $query->orderBy('id', 'asc')->get();
         $categorias = Categoria::all();
 
@@ -140,6 +144,7 @@ class AdminController extends Controller
             'precio' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'stock_minimo' => 'required|integer|min:0',
+            'activo' => 'required|boolean',
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|max:2048'
         ]);
@@ -157,6 +162,7 @@ class AdminController extends Controller
             $producto->url_imagen = $request->file('imagen')->store('productos', 'public');
         }
 
+        $producto->activo = $request->activo;
         $producto->save();
 
         return redirect()->route('admin.productos.index')->with('success', '¡Producto actualizado correctamente!');
