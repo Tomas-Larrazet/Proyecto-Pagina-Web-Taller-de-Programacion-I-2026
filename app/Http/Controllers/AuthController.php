@@ -42,21 +42,36 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+    $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::attempt($credentials, $request->has('remember'))){
-            $request->session()->regenerate();
+    // Primero verificamos si el email existe
+    $usuario = User::where('email', $request->email)->first();
 
-            if (Auth::user()->rol === 'admin') {
-                return redirect()->intended('/admin/panel-principal'); 
-            }
-            return redirect()->intended(route('catalogo.index'));
+    if (!$usuario) {
+        return back()->withErrors([
+            'email' => 'No encontramos ninguna cuenta con ese email. ¿Ya te registraste?'
+        ])->withInput();
+    }
+
+    // El email existe pero la contraseña es incorrecta
+    if (!Hash::check($request->password, $usuario->password)) {
+        return back()->withErrors([
+            'password' => 'La contraseña ingresada es incorrecta.'
+        ])->withInput();
+    }
+
+    // Todo bien, iniciamos sesión
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->has('remember'))) {
+        $request->session()->regenerate();
+
+        if (Auth::user()->rol === 'admin') {
+            return redirect()->intended('/admin/panel-principal');
         }
-
-        return back()->with('error', 'No encontramos ninguna cuenta con esos datos, revisa los datos ingresados o registrate.');
+        return redirect()->intended(route('catalogo.index'));
+    }
     }
 
     public function logout(Request $request){

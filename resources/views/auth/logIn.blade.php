@@ -14,25 +14,27 @@
               <h3 class="mt-2 fw-bold">Iniciar Sesión</h3> 
               <p class="text-muted small">Ingresá a tu cuenta de Brightness.Store</p>
             </div>
-            
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                </div>
-            @endif
 
             <form action="{{ url('/logIn') }}" method="POST">
              @csrf
              <div class="mb-4">
                <label class="form-label fw-bold">Email</label>
-               <input type="email" name="email" class="form-control form-control-lg" placeholder="ejemplo@correo.com" required> 
+               <input type="email" name="email" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="ejemplo@correo.com" value="{{ old('email') }}" required> 
+               @error('email')
+                   <div class="invalid-feedback fw-bold">
+                       <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
+                   </div>
+               @enderror
              </div>
 
              <div class="mb-4">
                <label class="form-label fw-bold">Contraseña</label>
-               <input type="password" name="password" class="form-control form-control-lg" placeholder="Tu contraseña" required> 
+               <input type="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="Tu contraseña" required> 
+               @error('password')
+                   <div class="invalid-feedback fw-bold">
+                       <i class="bi bi-exclamation-circle me-1"></i>{{ $message }}
+                   </div>
+               @enderror
              </div>
                   
              <div class="d-grid mb-3">

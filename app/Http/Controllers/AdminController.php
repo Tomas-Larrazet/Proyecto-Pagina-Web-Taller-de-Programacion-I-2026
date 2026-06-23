@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class AdminController extends Controller
 {
     public function index(){
-        $totalUsuarios = User::count();
+        $totalUsuarios = User::where('rol', '!=', 'admin')->count();
 
         $totalProductos = Producto::count();
 
