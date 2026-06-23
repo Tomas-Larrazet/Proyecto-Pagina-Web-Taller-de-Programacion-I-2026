@@ -18,7 +18,17 @@ Taller de Programacion 1
 Larrazet Tomas
 Pannunzio Mario Nicolas
 
+## 📄 Documentación
 
+| Documento | Descripción | Enlace |
+|-----------|-------------|--------|
+| 📋 ERS | Especificación de Requisitos de Software (IEEE 830) | [Ver PDF](docs/ERS_BrightnessStore.pdf) |
+| 📖 Manual de Usuario | Guía completa de uso para clientes y administradores | [Ver PDF](docs/Manual_Usuario_BrightnessStore.pdf) |
+| ⚙️ Guía de Instalación | Instrucciones para configurar el entorno local | [Ver PDF](docs/Guia_Instalacion_BrightnessStore.pdf) |
+
+
+
+---
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
