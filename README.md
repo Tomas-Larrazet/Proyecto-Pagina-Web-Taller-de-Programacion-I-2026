@@ -15,8 +15,8 @@ Lic. en Sistemas De Informacion
 Taller de Programacion 1
 
 ### Alumnos
-Larrazet Tomas
-Pannunzio Mario Nicolas
+-Larrazet Tomas
+-Pannunzio Mario Nicolas
 
 ## 📄 Documentación
 
